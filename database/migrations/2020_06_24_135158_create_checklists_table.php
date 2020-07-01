@@ -17,7 +17,9 @@ class CreateChecklistsTable extends Migration
             $table->id();
             $table->integer('user_id')->unsigned();
             $table->string('isLate')->nullable();
+            $table->timestamp('lastChecked')->nullable();
             $table->string('isOkay')->nullable();
+            $table->string('nextChecklist')->nullable();
             $table->string('timeOfTheDay')->nullable();
             $table->timestamps();
         });

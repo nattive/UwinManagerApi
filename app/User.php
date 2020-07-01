@@ -18,7 +18,13 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'password', 'name',
+        'business_unit',
+        'isHOM',
+        'duty',
+        'isActive',
+        'email',
+        'head_of_manager_id',
     ];
 
     /**
@@ -38,4 +44,21 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function Checklists()
+    {
+        return $this->hasMany('App\Checklist');
+    }
+    public function Messages()
+    {
+        return $this->hasMany('App\Message');
+    }
+    public function WSKPAs()
+    {
+        return $this->hasMany('App\WSKPA');
+    }
+    public function FuelConsumptionReports()
+    {
+        return $this->hasMany('App\FuelConsumptionReport');
+    }
 }
