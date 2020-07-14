@@ -30,12 +30,46 @@ Route::group([
 
 
 Route::group(['prefix' => 'checklist', 'middleware' => 'auth:api'], function () {
-    Route::get('check', 'ChecklistController@isExist');
+    Route::get('check', 'ChecklistController@shouldOpenDialog');
     Route::get('checkTime', 'ChecklistController@getTimeOfTheDay');
     Route::get('store', 'ChecklistController@store');
+    Route::get('latest', 'ChecklistController@latest');
     
 });
-Route::get('test', 'ChecklistController@test');
+
+Route::group(['prefix' => 'report'], function () {
+    Route::group(['prefix' => 'wskpa'], function () {
+        Route::get('/', 'WSKPAController@index');
+        Route::get('/Latest', 'WSKPAController@Latest');
+        Route::post('store', 'WSKPAController@store');
+        Route::post('show', 'WSKPAController@show');
+        Route::patch('update', 'WSKPAController@update');
+        Route::delete('destroy', 'WSKPAController@destroy');
+    });
+  Route::group(['prefix' => 'sfcr'], function () {
+        Route::get('/', 'FuelConsumptionReportController@index');
+        Route::get('/Latest', 'FuelConsumptionReportController@Latest');
+        Route::post('store', 'FuelConsumptionReportController@store');
+        Route::post('show', 'FuelConsumptionReportController@show');
+        Route::patch('update', 'FuelConsumptionReportController@update');
+        Route::delete('destroy', 'FuelConsumptionReportController@destroy');
+    });
+
+
+});
+
+Route::group(['prefix' => 'report'], function () {
+    Route::group(['prefix' => 'fuel'], function () {
+        Route::get('/', 'FuelConsumptionReportController@index');
+        Route::get('/getThisWeekReport', 'FuelConsumptionReportController@getThisWeekReport');
+        Route::post('store', 'FuelConsumptionReportController@store');
+        Route::post('show', 'FuelConsumptionReportController@show');
+        Route::patch('update', 'FuelConsumptionReportController@update');
+        Route::delete('destroy', 'FuelConsumptionReportController@destroy');
+    });
+});
+
+Route::get('test', 'ChecklistController@shouldOpenDialog');
 // $permissions = [
 //     "View All Managers",
 //     "Review Report",

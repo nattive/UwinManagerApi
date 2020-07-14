@@ -23,6 +23,7 @@ class CreateWSKPASTable extends Migration
             $table->string('cr_rs');
             $table->string('revenue_per_day');
             $table->string('appearance');
+            $table->string('workPercentage');
             $table->string('general_equipment_maintenance');
             $table->timestamps();
         });
