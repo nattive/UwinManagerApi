@@ -17,11 +17,13 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('business_unit')->nullable();
-            $table->string('isHOM')->default('false');
+            $table->string('isHOM')->default(0);
             $table->string('duty')->default('manager');
-            $table->string('isActive')->default('true');
+            $table->string('isActive')->default(1);
             $table->string('email')->unique();
             $table->integer('head_of_manager_id')->nullable();
+            $table->string('profile_image')->nullable();
+            $table->string('phone_number')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

@@ -37,6 +37,26 @@ Route::group(['prefix' => 'checklist', 'middleware' => 'auth:api'], function () 
     
 });
 
+
+Route::group(['prefix' => 'users', 'middleware' => 'auth:api'], function () {
+    Route::get('active/all', 'UserController@index');
+    Route::get('get/{id}', 'UserController@show');
+    
+});
+
+Route::group(['prefix' => 'chat', 'middleware' => 'auth:api'], function () {
+    Route::get('messages', 'ChatController@fetchMessages');
+    Route::get('messages/chat-id/{id}', 'ChatController@getMessagesByChat');
+    Route::post('messages', 'ChatController@sendMessage');
+    Route::post('group/store', 'GroupController@store');
+    Route::post('group/update/{group_id}', 'GroupController@update');
+    Route::post('/private/init', 'ChatController@InitSingleChat');
+    Route::get('/private', 'ChatController@getChat');
+    
+});
+
+
+
 Route::group(['prefix' => 'report'], function () {
     Route::group(['prefix' => 'wskpa'], function () {
         Route::get('/', 'WSKPAController@index');

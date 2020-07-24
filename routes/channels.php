@@ -1,5 +1,7 @@
 <?php
 
+use App\Broadcasting\OneOnOneChatChannel;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -14,5 +16,16 @@ use Illuminate\Support\Facades\Broadcast;
 */
 
 Broadcast::channel('App.User.{id}', function ($user, $id) {
+    return (int) $user->id === (int) $id;
+});
+
+Broadcast::channel('private-chat-{chatId}', function ($user, $chatId) {
+    
+    return true;
+});
+// Broadcast::channel('chat.{id}', function ($chatId) {
+//     return Auth::check();
+// });
+Broadcast::channel('users.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
