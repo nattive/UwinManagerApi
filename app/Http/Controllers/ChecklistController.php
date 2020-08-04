@@ -16,17 +16,19 @@ class ChecklistController extends Controller
      */
     private function checkIfChecklistExist()
     {
-        $checklist = Checklist::where('id', auth()->user()->id)->orderBy('created_at', 'DESC')->first();
+        $checklist = Checklist::where('id', auth()->user()->id)->orderBy('created_at', 'desc')->first();
         if (!$checklist) {
             return false;
         }
         return true;
     }
-
-    public function isExist()
+    
+    public function latest()
     {
-        return $this->checkIfChecklistExist() === false ? 'false' : 'true';
+        $checklist = Checklist::where('id', auth()->user()->id)->orderBy('created_at', 'desc')->first();
+        return response($checklist);
     }
+    
     /**
      * Store a newly created resource in storage.
      *
@@ -37,7 +39,7 @@ class ChecklistController extends Controller
     {
         $id =  auth()->user()->id;
         $now = Carbon::now('WAT');
-        $LastChecklist = Checklist::where('user_id', $id)->orderBy('created_at', 'DESC')->first();
+        $LastChecklist = Checklist::where('user_id', $id)->orderBy('created_at', 'desc')->first();
         // return  $now;
 
         /**
@@ -56,24 +58,29 @@ class ChecklistController extends Controller
             /**
              * Check if previous entry is the same day with now 
              **/
+            $lastCreatedAt = Carbon::createFromTimeString($LastChecklist->created_at);
             if ($now->isSameDay(Carbon::createFromTimeString($LastChecklist->created_at))) {
                 // ($first->lessThan($second)
-                $nextChecklist = Carbon::create($LastChecklist->nextChecklist);
-                $HourNow = Carbon::parse($now->format('h:i:s A'));
-                $checklist = Checklist::create([
-                    'user_id' => $id,
-                    'isLate' =>  $HourNow->greaterThan($nextChecklist),
-                    'isOkay' => 'true', //Used to send feedback
-                    'nextChecklist' => $this->nextChecklistTime(),
-                    'timeOfTheDay' =>  $this->getTimeOfTheDay(Carbon::now('WAT'))
-                ]);
+                if ($lastCreatedAt->diffInHours() < 5) {
+                    return response('too soon to create checklist', 403);
+                } else {
+                    $nextChecklist = Carbon::create($LastChecklist->nextChecklist);
+                    $HourNow = Carbon::parse($now->format('Y-m-d H:i:s.u'));
+                    $checklist = Checklist::create([
+                        'user_id' => $id,
+                        'isLate' =>  $HourNow->greaterThan($nextChecklist),
+                        'isOkay' => 'true', //Used to send feedback
+                        'nextChecklist' => $this->nextChecklistTime(),
+                        'timeOfTheDay' =>  $this->getTimeOfTheDay(Carbon::now('WAT'))
+                    ]);
+                }
             } else {
                 /**
                  * The last entry is not the same day with now
                  */
-                $LastChecklist =  Carbon::createFromTimeString($LastChecklist->created_at);
+                $LastChecklist =  Carbon::createFromTimeString(Carbon::parse($LastChecklist->created_at));
                 $LastChecklist = $LastChecklist->addDay();
-                $LastChecklist = Carbon::createMidnightDate($LastChecklist);
+                $LastChecklist = Carbon::createMidnightDate((Carbon::parse($LastChecklist)));
                 $nextHour =   $LastChecklist->addMinutes(510);
                 $checklist = Checklist::create([
                     'user_id' => $id,
@@ -99,7 +106,7 @@ class ChecklistController extends Controller
          * Evening < 8:00pm
          */
 
-        $time = Carbon::now('UTC');
+        $time = Carbon::now('WAT');
         $morningStart = '20:00:00';
         $morningEnd = '08:30:00';
 
@@ -132,12 +139,22 @@ class ChecklistController extends Controller
 
     public function shouldOpenDialog()
     {
-        $id =  auth()->user()->id;
-        $now  = Carbon::now('WAT');
-        $HourNow = Carbon::parse($now->format('h:i:s A'));
-        $LastChecklist = Checklist::where('user_id', $id)->orderBy('created_at', 'DESC')->first();
-
-        return Carbon::create(($HourNow)->greaterThan($LastChecklist->extChecklist));
+        $id =  1;
+        $LastChecklist = Checklist::where('user_id', $id)->orderBy('created_at', 'desc')->first();
+        if ($LastChecklist) {
+            $diff = Carbon::createFromTimeString($LastChecklist->nextChecklist)->subMinutes(60)->isPast();
+            // return   $diff;
+           return [
+               'open' =>  $diff,
+               'type' => $this->getTimeOfTheDay(),
+               'next' => $this->nextChecklistTime()
+           ];
+        }
+        return [
+            'open' =>  true,
+            'type' => $this->getTimeOfTheDay(),
+            'next' => $this->nextChecklistTime(),
+        ];
     }
     /**
      * Returns the 12hour format tine of next checklist
@@ -151,29 +168,30 @@ class ChecklistController extends Controller
         // Reset time to midnight
         //$dt->format('l jS \\of F Y h:i:s A')
         $presentHour = Carbon::parse($now);
-        $presentHour = $presentHour->format('h:i:s A');
-
+        $presentHour = $presentHour->format('Y-m-d H:i:s.u');
         /**
          * Set default time to calculate on
          */
-        $midnight = Carbon::create('00:00:00')->format('h:i:s A');
+        $midnight = Carbon::create('00:00:00')->format('Y-m-d H:i:s.u');
+        // return $midnight;
 
-        // return Carbon::create($presentHour)->addMinutes(510)->format('h:i:s A');
+        // return Carbon::create($presentHour)->addMinutes(510)->format('Y-m-d H:i:s.u');
 
         /**
          * Return hours and minute of next checklist
          */
+        // return $this->getTimeOfTheDay();
         switch ($this->getTimeOfTheDay()) {
             case 'morning':
-                return Carbon::create($midnight)->addMinutes(510)->format('h:i:s A');
+                return Carbon::create($midnight)->addMinutes(510)->format('Y-m-d H:i:s.u');
                 break;
             case 'afternoon':
-                return Carbon::create($midnight)->addMinutes(870)->format('h:i:s A');
+                return Carbon::create($midnight)->addMinutes(870)->format('Y-m-d H:i:s.u');
                 break;
             case 'night':
                 # code...->addDay()
                 // $dt1 =   $midnight->addDay();
-                return Carbon::create($midnight)->addDay()->addHours(8)->addMinutes(30)->format('h:i:s A');
+                return Carbon::create($midnight)->addDay()->addHours(8)->addMinutes(30)->format('Y-m-d H:i:s.u');
 
                 break;
 

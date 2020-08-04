@@ -21,6 +21,7 @@ class CreateChecklistsTable extends Migration
             $table->string('isOkay')->nullable();
             $table->string('nextChecklist')->nullable();
             $table->string('timeOfTheDay')->nullable();
+            $table->string('approvedBy')->nullable();
             $table->timestamps();
         });
     }

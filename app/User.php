@@ -49,9 +49,9 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Checklist');
     }
-    public function Messages()
+    public function ChatMessages()
     {
-        return $this->hasMany('App\Message');
+        return $this->hasMany('App\ChatMessage');
     }
     public function WSKPAs()
     {
@@ -60,5 +60,14 @@ class User extends Authenticatable
     public function FuelConsumptionReports()
     {
         return $this->hasMany('App\FuelConsumptionReport');
+    } 
+      public function AccountReports()
+    {
+        return $this->hasMany('App\AccountReport');
+    } 
+    
+    public function chats()
+    {
+        return $this->hasMany('App\Chat');
     }
 }

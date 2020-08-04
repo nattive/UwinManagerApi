@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Schema;
 class CreateFuelConsumptionReportsTable extends Migration
 {
     /**
+     * 
      * Run the migrations.
      *
      * @return void
@@ -15,15 +16,18 @@ class CreateFuelConsumptionReportsTable extends Migration
     {
         Schema::create('fuel_consumption_reports', function (Blueprint $table) {
             $table->id();
-            $table->string('full_name');
             $table->integer('user_id')->unsigned();
-            $table->string('work_attendance');
-            $table->string('punctuality');
-            $table->string('accountability');
-            $table->string('cr_rs');
-            $table->string('revenue_per_day');
-            $table->string('appearance');
-            $table->string('general_equipment_maintenance');
+            $table->string('date_finished')->nullable();
+            $table->string('date_supplied')->nullable();
+            $table->string('usage_duration');
+            $table->string('volume');
+            $table->string('petrol_station')->nullable();
+            $table->string('isApprovedBy')->nullable();
+            $table->string('hasReceived')->nullable();
+            // $table->string('needApproval')->nullable();
+            $table->string('orderInterval')->nullable();
+            $table->integer('pricePerLitre')->default(0);
+            $table->integer('requestThisMonth')->default(0);
             $table->timestamps();
         });
     }
