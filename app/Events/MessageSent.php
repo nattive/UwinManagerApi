@@ -36,9 +36,8 @@ class MessageSent implements ShouldBroadcastNow
      *
      * @return void
      */
-    public function __construct(User $user, ChatMessage $text)
+    public function __construct(ChatMessage $text)
     {
-        $this->user = $user;
         $this->text = $text;
     }
 

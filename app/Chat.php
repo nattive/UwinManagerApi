@@ -15,4 +15,10 @@ class Chat extends Model
     {
         return $this->hasMany('App\ChatMessage');
     }
+
+    public function users()
+    {
+        return $this->hasMany('App\User');
+    }
+    
 }

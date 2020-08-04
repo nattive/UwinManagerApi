@@ -21,9 +21,12 @@ class CreateUsersTable extends Migration
             $table->string('duty')->default('manager');
             $table->string('isActive')->default(1);
             $table->string('email')->unique();
-            $table->integer('head_of_manager_id')->nullable();
+            $table->string('head_of_manager_id')->nullable();
+            $table->string('location')->nullable();
+            $table->string('phoneNumber')->nullable();
+            $table->string('guarantorPhone')->nullable();
+            $table->string('guarantorAddress')->nullable();
             $table->string('profile_image')->nullable();
-            $table->string('phone_number')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

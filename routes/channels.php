@@ -20,8 +20,7 @@ Broadcast::channel('App.User.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('private-chat-{chatId}', function ($user, $chatId) {
-    
-    return true;
+     return  $user;
 });
 // Broadcast::channel('chat.{id}', function ($chatId) {
 //     return Auth::check();

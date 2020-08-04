@@ -139,14 +139,22 @@ class ChecklistController extends Controller
 
     public function shouldOpenDialog()
     {
-        $id =  auth()->user()->id;
+        $id =  1;
         $LastChecklist = Checklist::where('user_id', $id)->orderBy('created_at', 'desc')->first();
         if ($LastChecklist) {
             $diff = Carbon::createFromTimeString($LastChecklist->nextChecklist)->subMinutes(60)->isPast();
             // return   $diff;
-           return $diff === true ? true : 'false';
+           return [
+               'open' =>  $diff,
+               'type' => $this->getTimeOfTheDay(),
+               'next' => $this->nextChecklistTime()
+           ];
         }
-        return true;
+        return [
+            'open' =>  true,
+            'type' => $this->getTimeOfTheDay(),
+            'next' => $this->nextChecklistTime(),
+        ];
     }
     /**
      * Returns the 12hour format tine of next checklist

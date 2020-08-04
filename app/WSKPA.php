@@ -31,4 +31,8 @@ class WSKPA extends Model
         $carbon = Carbon::parse($value);
         return $carbon->toDateTimeString();
     }
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 }

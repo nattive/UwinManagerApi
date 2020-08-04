@@ -61,6 +61,11 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\FuelConsumptionReport');
     } 
+      public function AccountReports()
+    {
+        return $this->hasMany('App\AccountReport');
+    } 
+    
     public function chats()
     {
         return $this->hasMany('App\Chat');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Chat;
 use App\ChatMessage;
+use App\Events\ChatMessageCreated;
 use App\Events\GroupChat;
 use App\Events\MessageSent;
 use App\Events\PeerTOPeerMessageCreatedEvent;
@@ -63,7 +64,7 @@ class ChatController extends Controller
                     'text' => $request->text,
                     'chat_id' =>  $chat->id,
                 ]);
-                broadcast(new PeerTOPeerMessageCreatedEvent($user, $ChatMessage, $chat))->toOthers();
+                broadcast(new ChatMessageCreated($ChatMessage));
 
                 return response()->json(['receiver' => $receiver], 200);
             }

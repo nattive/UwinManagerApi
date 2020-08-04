@@ -19,7 +19,7 @@ Route::group([
 ], function () {
     Route::post('login', 'AuthController@login')->name('login');
     Route::post('signup', 'AuthController@signup');
-    
+
     Route::group([
         'middleware' => 'auth:api'
     ], function () {
@@ -34,14 +34,12 @@ Route::group(['prefix' => 'checklist', 'middleware' => 'auth:api'], function () 
     Route::get('checkTime', 'ChecklistController@getTimeOfTheDay');
     Route::get('store', 'ChecklistController@store');
     Route::get('latest', 'ChecklistController@latest');
-    
 });
 
 
 Route::group(['prefix' => 'users', 'middleware' => 'auth:api'], function () {
     Route::get('active/all', 'UserController@index');
     Route::get('get/{id}', 'UserController@show');
-    
 });
 
 Route::group(['prefix' => 'chat', 'middleware' => 'auth:api'], function () {
@@ -52,12 +50,25 @@ Route::group(['prefix' => 'chat', 'middleware' => 'auth:api'], function () {
     Route::post('group/update/{group_id}', 'GroupController@update');
     Route::post('/private/init', 'ChatController@InitSingleChat');
     Route::get('/private', 'ChatController@getChat');
-    
 });
 
 
 
+
+Route::group(['prefix' => 'supervisor', 'middleware' => ['role:super-admin']], function () {
+    Route::group(['prefix' => 'report'], function () {
+        Route::post('/approve', 'SupervisorController@approveReport');
+        Route::get('/wskpa', 'SupervisorController@wskpa');
+        Route::get('/sfcr', 'SupervisorController@sfcr');
+        Route::get('/sales', 'SupervisorController@sales');
+        Route::get('/wskpa/{id}', 'SupervisorController@wskpaByUser');
+        Route::get('/sfcr/{id}', 'SupervisorController@sfcrByUser');
+        Route::get('/sales/{id}', 'SupervisorController@salesByUser');
+    });
+});
+
 Route::group(['prefix' => 'report'], function () {
+    Route::get('all/Latest', 'ReportController@index');
     Route::group(['prefix' => 'wskpa'], function () {
         Route::get('/', 'WSKPAController@index');
         Route::get('/Latest', 'WSKPAController@Latest');
@@ -66,7 +77,7 @@ Route::group(['prefix' => 'report'], function () {
         Route::patch('update', 'WSKPAController@update');
         Route::delete('destroy', 'WSKPAController@destroy');
     });
-  Route::group(['prefix' => 'sfcr'], function () {
+    Route::group(['prefix' => 'sfcr'], function () {
         Route::get('/', 'FuelConsumptionReportController@index');
         Route::get('/Latest', 'FuelConsumptionReportController@Latest');
         Route::post('store', 'FuelConsumptionReportController@store');
@@ -74,18 +85,12 @@ Route::group(['prefix' => 'report'], function () {
         Route::patch('update', 'FuelConsumptionReportController@update');
         Route::delete('destroy', 'FuelConsumptionReportController@destroy');
     });
-
-
-});
-
-Route::group(['prefix' => 'report'], function () {
-    Route::group(['prefix' => 'fuel'], function () {
-        Route::get('/', 'FuelConsumptionReportController@index');
-        Route::get('/getThisWeekReport', 'FuelConsumptionReportController@getThisWeekReport');
-        Route::post('store', 'FuelConsumptionReportController@store');
-        Route::post('show', 'FuelConsumptionReportController@show');
-        Route::patch('update', 'FuelConsumptionReportController@update');
-        Route::delete('destroy', 'FuelConsumptionReportController@destroy');
+    Route::group(['prefix' => 'sales'], function () {
+        Route::get('/', 'AccountReportController@index');
+        Route::post('store', 'AccountReportController@store');
+        Route::get('show/{id}', 'AccountReportController@show');
+        Route::patch('update', 'AccountReportController@update');
+        Route::delete('destroy', 'AccountReportController@destroy');
     });
 });
 
