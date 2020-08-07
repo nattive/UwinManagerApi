@@ -8,7 +8,6 @@ class Chat extends Model
 {
     public $fillable = [
         'user_id',
-        'receiver_id',
     ];
 
     public function ChatMessages()
@@ -18,7 +17,7 @@ class Chat extends Model
 
     public function users()
     {
-        return $this->hasMany('App\User');
+        return $this->belongsToMany('App\User');
     }
     
 }

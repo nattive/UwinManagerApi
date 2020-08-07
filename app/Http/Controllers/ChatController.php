@@ -9,6 +9,7 @@ use App\Events\GroupChat;
 use App\Events\MessageSent;
 use App\Events\PeerTOPeerMessageCreatedEvent;
 use App\Http\Resources\ChatResource;
+use App\Http\Resources\ChatResourse;
 use App\Message;
 use App\User;
 use Illuminate\Http\Request;
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Broadcast;
 
 class ChatController extends Controller
 {
+    public $user;
+    public $receiver;
     public function fetchMessages()
     {
         return ChatMessage::with('user')->get();
@@ -27,17 +30,25 @@ class ChatController extends Controller
         if ($user) {
             if ($receiver) {
                 $chat = Chat::where([
-                    ['user_id', $user->id],
-                    ['receiver_id', $request->receiver_id]
-                ])
-                    ->orWhere([['user_id', $request->receiver_id], ['receiver_id',  $user->id]])->first();
+                    ['user2', '=',$user -> id],
+                    ['user1', '=',  $receiver -> id ],
+                ])-> orWhere([
+                    ['user1', '=', $user->id],
+                    ['user2', '=',  $receiver->id],
+                ])->first();
+                // $chat = Chat::whereHas('users', function ($query) {
+                //     $user = auth()->user();
+                //     return $query->whereIn('id', [$user->id, request('receiver_id') ]);
+                // })->get()->first();
                 if ($chat) {
                     return response()->json(['channel' => "private-chat-" . $chat->id, 'chat' => $chat]);
                 } else {
-                    $chat = $user->chats()->create([
-                        'user_id' => auth()->user()->id,
-                        'receiver_id' => $request->receiver_id
-                    ]);
+                    $chat = new Chat();
+                    $chat->user1 = $user -> id;
+                    $chat->user2 = $receiver -> id;
+                    $chat->save();
+                    // $chat -> users() -> attach($receiver, , ['type' => 'receiver']);
+                    return response()->json(['channel' => "private-chat-" . $chat->id, 'chat' => $chat]);
                 }
             } else {
                 return response()->json('Receiver not found', 404);
@@ -61,6 +72,7 @@ class ChatController extends Controller
                 $chat = Chat::where('id', $request->chatId)->first();
                 $ChatMessage = ChatMessage::create([
                     'user_id' => $user->id,
+                    'receiver_id' => $request->receiver_id,
                     'text' => $request->text,
                     'chat_id' =>  $chat->id,
                 ]);
@@ -103,5 +115,12 @@ class ChatController extends Controller
             return new ChatResource($chat);
         }
         return  response()->json('Chat not found', 404);
+    }
+
+    public function getAllChat()
+    {
+        $user = auth()->user();
+        $chat = Chat::where('user2',  $user->id)->orWhere('user1', $user->id)->get();
+        return ChatResourse::collection($chat);
     }
 }

@@ -22,9 +22,9 @@ Broadcast::channel('App.User.{id}', function ($user, $id) {
 Broadcast::channel('private-chat-{chatId}', function ($user, $chatId) {
      return  $user;
 });
-// Broadcast::channel('chat.{id}', function ($chatId) {
-//     return Auth::check();
-// });
+Broadcast::channel('chat', function ($user) {
+    return $user;
+});
 Broadcast::channel('users.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });

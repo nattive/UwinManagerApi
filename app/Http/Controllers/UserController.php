@@ -12,9 +12,9 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function all()
     {
-        $users = User::where('isActive', "true")->get();
+        $users = User::with('roles')->get();
         return response()->json($users, 200);
     }
     /**
@@ -22,9 +22,10 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function active()
     {
-        //
+        $users = User::where('isActive', 1)->get();
+        return response()->json($users, 200);
     }
 
     /**

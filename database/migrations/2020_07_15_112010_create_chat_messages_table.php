@@ -18,6 +18,7 @@ class CreateChatMessagesTable extends Migration
             $table->string('text');
             $table->unsignedBigInteger('chat_id')->nullable();
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('receiver_id');
             $table->unsignedBigInteger('group_id')->nullable();
             $table->timestamps();
 

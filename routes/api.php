@@ -21,7 +21,7 @@ Route::group([
     Route::post('signup', 'AuthController@signup');
 
     Route::group([
-        'middleware' => 'auth:api'
+        'middleware' => ['auth:api']
     ], function () {
         Route::get('logout', 'AuthController@logout');
         Route::get('user', 'AuthController@user');
@@ -29,7 +29,7 @@ Route::group([
 });
 
 
-Route::group(['prefix' => 'checklist', 'middleware' => 'auth:api'], function () {
+Route::group(['prefix' => 'checklist',   'middleware' => ['auth:api']], function () {
     Route::get('check', 'ChecklistController@shouldOpenDialog');
     Route::get('checkTime', 'ChecklistController@getTimeOfTheDay');
     Route::get('store', 'ChecklistController@store');
@@ -37,12 +37,12 @@ Route::group(['prefix' => 'checklist', 'middleware' => 'auth:api'], function () 
 });
 
 
-Route::group(['prefix' => 'users', 'middleware' => 'auth:api'], function () {
-    Route::get('active/all', 'UserController@index');
+Route::group(['prefix' => 'users', 'middleware' =>  ['auth:api']], function () {
+    Route::get('active/all', 'UserController@active');
     Route::get('get/{id}', 'UserController@show');
 });
 
-Route::group(['prefix' => 'chat', 'middleware' => 'auth:api'], function () {
+Route::group(['prefix' => 'chat', 'middleware' =>  ['auth:api']], function () {
     Route::get('messages', 'ChatController@fetchMessages');
     Route::get('messages/chat-id/{id}', 'ChatController@getMessagesByChat');
     Route::post('messages', 'ChatController@sendMessage');
@@ -50,12 +50,22 @@ Route::group(['prefix' => 'chat', 'middleware' => 'auth:api'], function () {
     Route::post('group/update/{group_id}', 'GroupController@update');
     Route::post('/private/init', 'ChatController@InitSingleChat');
     Route::get('/private', 'ChatController@getChat');
+    Route::get('/all', 'ChatController@getAllChat');
 });
 
 
 
-
-Route::group(['prefix' => 'supervisor', 'middleware' => ['role:super-admin']], function () {
+Route::group(['prefix' => 'supervisor', 'middleware' => ['auth:api', 'role:Director']], function () {
+    
+    Route::group(['prefix' => 'user'], function () {
+        Route::get('all', 'UserController@all');
+    });
+    Route::group(['prefix' => 'roles'], function () {
+        Route::get('/list', 'PermissionController@role_list');
+        Route::post('/store', 'PermissionController@role_store');
+        Route::post('/assign/{role}', 'PermissionController@assignRoleToUser');
+        
+    });
     Route::group(['prefix' => 'report'], function () {
         Route::post('/approve', 'SupervisorController@approveReport');
         Route::get('/wskpa', 'SupervisorController@wskpa');
@@ -65,9 +75,16 @@ Route::group(['prefix' => 'supervisor', 'middleware' => ['role:super-admin']], f
         Route::get('/sfcr/{id}', 'SupervisorController@sfcrByUser');
         Route::get('/sales/{id}', 'SupervisorController@salesByUser');
     });
+    
+    Route::group(['prefix' => 'permission'], function () {
+        Route::post('/list', 'PermissionController@permission_list');
+        Route::post('/store', 'PermissionController@permission_store');
+        Route::post('/permit_role/{role}', 'PermissionController@givePermissionToRole');
+        
+    });
 });
 
-Route::group(['prefix' => 'report'], function () {
+Route::group(['prefix' => 'report','middleware' => ['auth:api', 'role:supervisor']], function () {
     Route::get('all/Latest', 'ReportController@index');
     Route::group(['prefix' => 'wskpa'], function () {
         Route::get('/', 'WSKPAController@index');

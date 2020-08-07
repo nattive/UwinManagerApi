@@ -34,17 +34,14 @@ class ChatMessageCreated implements ShouldBroadcastNow
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
+
     public function broadcastOn()
     {
-        return new PresenceChannel('private-chat-' . $this->message->chat->id);
+        return ['my-channel'];
     }
-    /**
-     * The event's broadcast name.
-     *
-     * @return string
-     */
+
     public function broadcastAs()
     {
-        return 'message.posted';
+        return 'my-event';
     }
 }

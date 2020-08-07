@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -13,10 +13,7 @@ use Spatie\Permission\Models\Permission;
 class PermissionController extends Controller
 {
     public $successStatus = 200;
-    public function __construct()
-    {
-        $this->middleware(['isAdmin']);
-    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -86,7 +83,7 @@ class PermissionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function role_has_permissions(Request $request, Role $role)
+    public function givePermissionToRole(Request $request, Role $role)
     {
         $validator = Validator::make($request->all(), [
             'permission_id' => 'required|exists:permissions,id'
@@ -105,7 +102,7 @@ class PermissionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function assign_user_to_role(Request $request, Role $role)
+    public function assignRoleToUser(Request $request, Role $role)
     {
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id'

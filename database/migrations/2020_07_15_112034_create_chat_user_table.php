@@ -41,4 +41,5 @@ class CreateChatUserTable extends Migration
     {
         Schema::dropIfExists('chat_user');
     }
-}
+    
+} 
