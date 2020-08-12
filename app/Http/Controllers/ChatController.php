@@ -30,9 +30,9 @@ class ChatController extends Controller
         if ($user) {
             if ($receiver) {
                 $chat = Chat::where([
-                    ['user2', '=',$user -> id],
-                    ['user1', '=',  $receiver -> id ],
-                ])-> orWhere([
+                    ['user2', '=', $user->id],
+                    ['user1', '=',  $receiver->id],
+                ])->orWhere([
                     ['user1', '=', $user->id],
                     ['user2', '=',  $receiver->id],
                 ])->first();
@@ -41,14 +41,14 @@ class ChatController extends Controller
                 //     return $query->whereIn('id', [$user->id, request('receiver_id') ]);
                 // })->get()->first();
                 if ($chat) {
-                    return response()->json(['channel' => "private-chat-" . $chat->id, 'chat' => $chat]);
+                    return response()->json(['channel' => "private-chat-" . $receiver->id, 'chat' => $chat]);
                 } else {
                     $chat = new Chat();
-                    $chat->user1 = $user -> id;
-                    $chat->user2 = $receiver -> id;
+                    $chat->user1 = $user->id;
+                    $chat->user2 = $receiver->id;
                     $chat->save();
                     // $chat -> users() -> attach($receiver, , ['type' => 'receiver']);
-                    return response()->json(['channel' => "private-chat-" . $chat->id, 'chat' => $chat]);
+                    return response()->json(['channel' => "private-chat-" . $user->id, 'channel2' => "private-chat-" . $receiver->id, 'chat' => $chat]);
                 }
             } else {
                 return response()->json('Receiver not found', 404);
@@ -76,7 +76,7 @@ class ChatController extends Controller
                     'text' => $request->text,
                     'chat_id' =>  $chat->id,
                 ]);
-                broadcast(new ChatMessageCreated($ChatMessage));
+                broadcast(new ChatMessageCreated($ChatMessage))->toOthers();
 
                 return response()->json(['receiver' => $receiver], 200);
             }

@@ -134,7 +134,7 @@ class ChecklistController extends Controller
          */
 
         $time = Carbon::now('WAT');
-        $morningStart = '20:00:00';
+        $morningStart = '00:00:00';
         $morningEnd = '08:30:00';
 
         $AfternoonStart = '08:31:00';

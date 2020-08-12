@@ -40,6 +40,7 @@ Route::group(['prefix' => 'checklist',   'middleware' => ['auth:api']], function
 Route::group(['prefix' => 'users', 'middleware' =>  ['auth:api']], function () {
     Route::get('active/all', 'UserController@active');
     Route::get('get/{id}', 'UserController@show');
+    Route::post('update/{id}', 'UserController@update');
 });
 
 Route::group(['prefix' => 'chat', 'middleware' =>  ['auth:api']], function () {

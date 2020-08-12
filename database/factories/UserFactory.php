@@ -22,8 +22,7 @@ $factory->define(User::class, function (Faker $faker) {
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
         'isHOM' => $faker->boolean(),
-        'isActive' => $faker->boolean(),
-        'profile_image' => $faker->image(),
+        'isActive' => true,
         'phoneNumber' => $faker->unique()->phoneNumber,
         'email_verified_at' => now(),
         'password' => bcrypt('123456789'), // password
