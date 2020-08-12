@@ -22,80 +22,107 @@ class ChecklistController extends Controller
         }
         return true;
     }
-    
+
     public function latest()
     {
         $checklist = Checklist::where('id', auth()->user()->id)->orderBy('created_at', 'desc')->first();
         return response($checklist);
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+
     public function store(Request $request)
     {
-        $id =  auth()->user()->id;
-        $now = Carbon::now('WAT');
-        $LastChecklist = Checklist::where('user_id', $id)->orderBy('created_at', 'desc')->first();
-        // return  $now;
-
-        /**
-         * If there are no entries in the checklist table
-         */
-        if (!$LastChecklist) {
-            $checklist = Checklist::create([
-                'user_id' => $id,
-                'isLate' =>  false,
-                'isOkay' => 'true',
-                'nextChecklist' => $this->nextChecklistTime(),
-                'lastChecked' => Carbon::now('WAT'), // Added 5:30mins
-                'timeOfTheDay' =>  $this->getTimeOfTheDay(Carbon::now('WAT'))
-            ]);
-        } else {
-            /**
-             * Check if previous entry is the same day with now 
-             **/
-            $lastCreatedAt = Carbon::createFromTimeString($LastChecklist->created_at);
-            if ($now->isSameDay(Carbon::createFromTimeString($LastChecklist->created_at))) {
-                // ($first->lessThan($second)
-                if ($lastCreatedAt->diffInHours() < 5) {
-                    return response('too soon to create checklist', 403);
-                } else {
-                    $nextChecklist = Carbon::create($LastChecklist->nextChecklist);
-                    $HourNow = Carbon::parse($now->format('Y-m-d H:i:s.u'));
-                    $checklist = Checklist::create([
-                        'user_id' => $id,
-                        'isLate' =>  $HourNow->greaterThan($nextChecklist),
-                        'isOkay' => 'true', //Used to send feedback
-                        'nextChecklist' => $this->nextChecklistTime(),
-                        'timeOfTheDay' =>  $this->getTimeOfTheDay(Carbon::now('WAT'))
-                    ]);
-                }
-            } else {
-                /**
-                 * The last entry is not the same day with now
-                 */
-                $LastChecklist =  Carbon::createFromTimeString(Carbon::parse($LastChecklist->created_at));
-                $LastChecklist = $LastChecklist->addDay();
-                $LastChecklist = Carbon::createMidnightDate((Carbon::parse($LastChecklist)));
-                $nextHour =   $LastChecklist->addMinutes(510);
-                $checklist = Checklist::create([
-                    'user_id' => $id,
-                    'isLate' =>  $now->lessThan($nextHour),
-                    'isOkay' => 'true', //Used to send feedback
-                    'nextChecklist' => $this->nextChecklistTime(),
-                    'timeOfTheDay' =>  $this->getTimeOfTheDay(Carbon::now('WAT'))
-                ]);
-            }
-
-            return response()->json([
-                'checklist' => $checklist,
-            ]);
-        }
+        $user =  auth()->user();
+        $checklist = $user->Checklists()->create([
+            'user_id' =>  $user->id,
+            'isLate' =>  false,
+            'isOkay' => 'true',
+            'nextChecklist' => $this->nextChecklistTime(),
+            'lastChecked' => Carbon::now('WAT'), // Added 5:30mins
+            'timeOfTheDay' =>  $this->getTimeOfTheDay(Carbon::now('WAT'))
+        ]);
+        return response()->json([
+            'checklist' => $checklist,
+        ]);
     }
+
+
+
+
+
+
+
+
+    // public function store(Request $request)
+    // {
+    //     $id =  auth()->user()->id;
+    //     $now = Carbon::now('WAT');
+    //     $LastChecklist = Checklist::where('user_id', $id)->orderBy('created_at', 'desc')->first();
+    //     // return  $now;
+
+    //     /**
+    //      * If there are no entries in the checklist table
+    //      */
+    //     if (!$LastChecklist) {
+    //         $checklist = Checklist::create([
+    //             'user_id' => $id,
+    //             'isLate' =>  false,
+    //             'isOkay' => 'true',
+    //             'nextChecklist' => $this->nextChecklistTime(),
+    //             'lastChecked' => Carbon::now('WAT'), // Added 5:30mins
+    //             'timeOfTheDay' =>  $this->getTimeOfTheDay(Carbon::now('WAT'))
+    //         ]);
+    //     } else {
+    //         /**
+    //          * Check if previous entry is the same day with now 
+    //          **/
+    //         $lastCreatedAt = Carbon::createFromTimeString($LastChecklist->created_at);
+    //         if ($now->isSameDay(Carbon::createFromTimeString($LastChecklist->created_at))) {
+    //             // ($first->lessThan($second)
+    //             if ($lastCreatedAt->diffInHours() < 5) {
+    //                 return response('too soon to create checklist', 403);
+    //             } else {
+    //                 $nextChecklist = Carbon::create($LastChecklist->nextChecklist);
+    //                 $HourNow = Carbon::parse($now->format('Y-m-d H:i:s.u'));
+    //                 $checklist = Checklist::create([
+    //                     'user_id' => $id,
+    //                     'isLate' =>  $HourNow->greaterThan($nextChecklist),
+    //                     'isOkay' => 'true', //Used to send feedback
+    //                     'nextChecklist' => $this->nextChecklistTime(),
+    //                     'timeOfTheDay' =>  $this->getTimeOfTheDay(Carbon::now('WAT'))
+    //                 ]);
+    //             }
+    //         } else {
+    //             /**
+    //              * The last entry is not the same day with now
+    //              */
+    //             $Checklist = Checklist::where('user_id', $id)->orderBy('created_at', 'desc')->first();
+
+    //             $LastChecklist =  Carbon::createFromTimeString(Carbon::parse($Checklist->created_at));
+    //             $LastChecklist = $LastChecklist->addDay();
+    //             $LastChecklist = Carbon::createMidnightDate((Carbon::createSafe($LastChecklist)));
+    //             $nextHour =   $LastChecklist->addMinutes(510);
+    //             $checklist = Checklist::create([
+    //                 'user_id' => $id,
+    //                 'isLate' =>  $now->lessThan($nextHour),
+    //                 'isOkay' => 'true', //Used to send feedback
+    //                 'nextChecklist' => $this->nextChecklistTime(),
+    //                 'timeOfTheDay' =>  $this->getTimeOfTheDay(Carbon::now('WAT'))
+    //             ]);
+    //         }
+
+    //         return response()->json([
+    //             'checklist' => $checklist,
+    //         ]);
+    //     }
+    // }
 
     public function getTimeOfTheDay()
     {
@@ -107,7 +134,7 @@ class ChecklistController extends Controller
          */
 
         $time = Carbon::now('WAT');
-        $morningStart = '20:00:00';
+        $morningStart = '00:00:00';
         $morningEnd = '08:30:00';
 
         $AfternoonStart = '08:31:00';
@@ -144,11 +171,11 @@ class ChecklistController extends Controller
         if ($LastChecklist) {
             $diff = Carbon::createFromTimeString($LastChecklist->nextChecklist)->subMinutes(60)->isPast();
             // return   $diff;
-           return [
-               'open' =>  $diff,
-               'type' => $this->getTimeOfTheDay(),
-               'next' => $this->nextChecklistTime()
-           ];
+            return [
+                'open' =>  $diff,
+                'type' => $this->getTimeOfTheDay(),
+                'next' => $this->nextChecklistTime()
+            ];
         }
         return [
             'open' =>  true,

@@ -12,9 +12,9 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function all()
     {
-        $users = User::where('isActive', "true")->get();
+        $users = User::with('roles')->get();
         return response()->json($users, 200);
     }
     /**
@@ -22,9 +22,13 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function active()
     {
-        //
+        $users = User::where([
+            ['isActive', '=', true],
+            ['id', '!=',  auth()->user()->id],
+        ])->get();
+        return response()->json($users, 200);
     }
 
     /**
@@ -71,7 +75,23 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // return $request -> all();
+        $user = User::where('id', $id)->first();
+        $user->name = $request->name ?? $user->name;
+        $user->isHOM = $request->isHOM ?? $user->isHOM;
+        $user->isActive = $request->isActive ?? $user->isActive;
+        $user->email = $request->email ?? $user->email;
+        $user->head_of_manager_id = $request->head_of_manager_id ?? $user->head_of_manager_id;
+        $user->location = $request->location ?? $user->location;
+        $user->phoneNumber = $request->phoneNumber ?? $user->phoneNumber;
+        $user->guarantorPhone = $request->guarantorPhone ?? $user->guarantorPhone;
+        $user->guarantorAddress = $request->guarantorAddress ?? $user->guarantorAddress;
+        $user->thumbnail_url = $request->thumbnail_url ?? $user->thumbnail_url;
+        $user->url = $request->url ?? $user->url;
+        $user->email_verified_at = $request->email_verified_at ?? $user->email_verified_at;
+        $user->password = $request->password ? bcrypt($request->password) : $user->password;
+        $user->save();
+        return response()->json($user);
     }
 
     /**

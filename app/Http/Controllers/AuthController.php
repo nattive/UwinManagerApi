@@ -28,12 +28,12 @@ class AuthController extends Controller
         ]);
         $user = new User([
             'name' => $request->name,
-            'business_unit'=> $request->business_unit,
-            'isHOM'=> $request->isHOM,
-            'duty'=> $request->duty,
-            'isActive'=> $request->isActive,
-            'email'=> $request->email,
-            'head_of_manager_id'=> $request->head_of_manager_id,
+            'business_unit' => $request->business_unit,
+            'isHOM' => $request->isHOM,
+            'duty' => $request->duty,
+            'isActive' => $request->isActive,
+            'email' => $request->email,
+            'head_of_manager_id' => $request->head_of_manager_id,
             'password' => bcrypt($request->password)
         ]);
         $user->save();
@@ -65,11 +65,11 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-       if(Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password], false, false)) {
-   
+        if (Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password], false, false)) {
+
             $user = Auth::guard('web')->user();
             $success['token'] =  $user->createToken('MyApp')->accessToken;
-            return response()->json(['success' => $success, 'user' => $user],200);
+            return response()->json(['success' => $success, 'user' => $user], 200);
         } else {
             return response()->json(['error' => 'Email or password incorrect'], 401);
         }
@@ -94,6 +94,8 @@ class AuthController extends Controller
      */
     public function user(Request $request)
     {
-        return response()->json($request->user());
+        $user = $request->user();
+        $role = $user->roles()->first();
+        return response()->json(compact('user', 'role'));
     }
 }

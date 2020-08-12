@@ -16,9 +16,7 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('business_unit')->nullable();
             $table->string('isHOM')->default(0);
-            $table->string('duty')->default('manager');
             $table->string('isActive')->default(1);
             $table->string('email')->unique();
             $table->string('head_of_manager_id')->nullable();
@@ -26,7 +24,9 @@ class CreateUsersTable extends Migration
             $table->string('phoneNumber')->nullable();
             $table->string('guarantorPhone')->nullable();
             $table->string('guarantorAddress')->nullable();
-            $table->string('profile_image')->nullable();
+            $table->string('thumbnail_url')->nullable();
+            $table->string('url')->nullable();
+            $table->boolean('isOnline')->default(false);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

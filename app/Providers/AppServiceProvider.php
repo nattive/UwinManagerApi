@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        ChatMessage::observe(ChatMessageObserver::class);
+        // ChatMessage::observe(ChatMessageObserver::class);
 
     }
 }

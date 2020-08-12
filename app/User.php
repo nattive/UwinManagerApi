@@ -18,13 +18,19 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'password', 'name',
-        'business_unit',
+        'name',
         'isHOM',
-        'duty',
         'isActive',
         'email',
         'head_of_manager_id',
+        'location',
+        'phoneNumber',
+        'guarantorPhone',
+        'guarantorAddress',
+        'thumbnail_url',
+        'url',
+        'email_verified_at',
+        'password'
     ];
 
     /**
@@ -68,6 +74,6 @@ class User extends Authenticatable
     
     public function chats()
     {
-        return $this->hasMany('App\Chat');
+        return $this->belongsToMany('App\Chat');
     }
 }
