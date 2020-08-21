@@ -48,10 +48,15 @@ Route::group(['prefix' => 'chat', 'middleware' => ['auth:api']], function () {
     Route::post('/private/init', 'ChatController@InitSingleChat');
     Route::get('/private', 'ChatController@getChat');
     Route::get('/all', 'ChatController@getAllChat');
-    Route::get('group/all', 'GroupController@myGroup');
+    // Route::get('group/all', 'GroupController@myGroup');
 
     Route::group(['prefix' => 'group', 'middleware' => ['auth:api']], function () {
+        Route::get('/init/{id}', 'GroupController@init');
         Route::post('/store', 'GroupController@store');
+        Route::get('/get_messages/{id}', 'GroupController@getChat');
+        Route::post('/addUser', 'GroupController@addUser');
+        Route::post('/groupChat', 'GroupController@groupChat');
+        Route::get('/myGroup', 'GroupController@myGroup');
         Route::post('/update/{group_id}', 'GroupController@update');
     });
 });

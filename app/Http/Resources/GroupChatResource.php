@@ -18,6 +18,8 @@ class GroupChatResource extends JsonResource
         return [
             'name' => $this->name,
             'id' => $this->id,
+            'type' => 'group',
+            'users' => $this-> users,
             'description' => $this->description,
             'image_url' => $this->image_url,
             'thumbnail_url' => $this->thumbnail_url,
@@ -25,7 +27,9 @@ class GroupChatResource extends JsonResource
             'last_message' => ChatMessage::where('group_id', $this->id)
                 ->orderBy('created_at', 'desc')
                 ->first(),
-            'messages' => $this->ChatMessages(),
+            'chat' =>ChatMessage::where('group_id', $this->id)
+                ->orderBy('created_at', 'desc')->get(),
+            'channel' => 'group-'.$this->id,
         ];
     }
 }
