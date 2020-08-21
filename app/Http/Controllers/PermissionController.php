@@ -21,7 +21,7 @@ class PermissionController extends Controller
      */
     public function role_list()
     {
-        $roles = Role::all();
+        $roles = Role::with("permissions")->get();
         return response()->json(['roles' => $roles], $this->successStatus);
     }
     /**

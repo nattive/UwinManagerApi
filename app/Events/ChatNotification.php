@@ -6,22 +6,30 @@ use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-
-class NotificationEvent
+use App\User;
+use App\ChatMessage;
+class ChatNotification  implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    public $message;
+    public $receiver;
+    public $sender;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($notificationArray)
+    public function __construct(ChatMessage $message, User $receiver, User $sender)
     {
-        $this->notificationArray = $notificationArray;
+        $this -> message = $message;
+        $this -> sender = $sender;
+        $this -> receiver = $receiver;
     }
 
     /**
@@ -29,8 +37,13 @@ class NotificationEvent
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-     public function broadcastOn()
+    public function broadcastOn()
     {
-        return ['my-notification'];
+        return new PresenceChannel('notification.'.$this -> receiver -> id);
+    }
+      public function broadcastAs()
+    {
+        // Log::info($message);
+        return 'notification';
     }
 }

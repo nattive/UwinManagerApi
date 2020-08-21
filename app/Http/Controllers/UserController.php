@@ -78,7 +78,6 @@ class UserController extends Controller
         // return $request -> all();
         $user = User::where('id', $id)->first();
         $user->name = $request->name ?? $user->name;
-        $user->isHOM = $request->isHOM ?? $user->isHOM;
         $user->isActive = $request->isActive ?? $user->isActive;
         $user->email = $request->email ?? $user->email;
         $user->head_of_manager_id = $request->head_of_manager_id ?? $user->head_of_manager_id;
@@ -88,10 +87,12 @@ class UserController extends Controller
         $user->guarantorAddress = $request->guarantorAddress ?? $user->guarantorAddress;
         $user->thumbnail_url = $request->thumbnail_url ?? $user->thumbnail_url;
         $user->url = $request->url ?? $user->url;
+        $user->isOnline = $request->isOnline ?? $user->isOnline;
         $user->email_verified_at = $request->email_verified_at ?? $user->email_verified_at;
         $user->password = $request->password ? bcrypt($request->password) : $user->password;
         $user->save();
-        return response()->json($user);
+        $role = $user->roles()->first();
+        return response()->json(compact('user', 'role'));
     }
 
     /**

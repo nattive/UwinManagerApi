@@ -35,7 +35,7 @@ class GroupCreated
         $channels = [];
 
         foreach ($this->group->users as $user) {
-            array_push($channels, new PrivateChannel('users.' . $user->id));
+            array_push($channels, new PresenceChannel('notification.' . $user->id));
         }
 
         return $channels;

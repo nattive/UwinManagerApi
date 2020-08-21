@@ -6,6 +6,7 @@ use App\Chat;
 use App\Events\GroupCreated;
 use App\Group;
 use App\User;
+use App\Http\Resources\GroupChatResource;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
@@ -20,7 +21,7 @@ class GroupController extends Controller
         $group->users()->attach($users);
         broadcast(new GroupCreated($group))->toOthers();
 
-        return $group;
+        return new GroupChatResource($group);
     }
 
     public function update($id)
@@ -41,5 +42,23 @@ class GroupController extends Controller
         $users = collect(request('users'));
         $users->push(auth()->user()->id);
         $group->users()->attach($users);
+    }
+
+     public function groupChat()
+    {
+        $conversation = ChatMessage::create([
+            'text' => request('text'),
+            'group_id' => request('group_id'),
+            'user_id' => auth()->user()->id,
+        ]);
+        broadcast(new GroupChat($conversation))->toOthers();
+
+        return $conversation->load('user');
+    }
+
+    public function myGroup()
+    {
+        $user = auth()->user();
+        return GroupChatResource::collection($user->groups);
     }
 }

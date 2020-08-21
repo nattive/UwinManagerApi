@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChatMessage extends Model
 {
-    
+
     protected $fillable = [
         'chat_id',
         'user_id',
@@ -26,6 +26,13 @@ class ChatMessage extends Model
 
     public function getCreatedAtAttribute($time)
     {
-        return Carbon::parse($time)->longAbsoluteDiffForHumans();
+        $date = Carbon::parse($time);
+        if ($date->isToday()) {
+            return $date->format('h:i:s A');
+        } else if ($date->isYesterday()) {
+            return 'Yesterday ' . $date->format('h:i:s A');
+        } else {
+            return $date->toFormattedDateString();
+        }
     }
 }

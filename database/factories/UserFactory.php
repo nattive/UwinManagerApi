@@ -21,7 +21,7 @@ $factory->define(User::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
-        'isHOM' => $faker->boolean(),
+        // 'isHOM' => $faker->boolean(),
         'isActive' => true,
         'phoneNumber' => $faker->unique()->phoneNumber,
         'email_verified_at' => now(),

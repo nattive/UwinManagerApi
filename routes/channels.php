@@ -1,9 +1,11 @@
 <?php
 
 use App\Broadcasting\OneOnOneChatChannel;
+use App\Chat;
 use App\ChatMessage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,11 +22,28 @@ Broadcast::channel('App.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
+Broadcast::channel('notification.{id}', function ($user, $id) {
+    return (int) $user->id === (int) $id ? $user : null;
+});
+
+
 Broadcast::channel('private-chat-{id}', function ($user, $id) {
-    if ( (int) $user->id === (int) $id) {
+    $chat = Chat::where('id', $id)->first();
+    if ($chat->user1 == $user->id) {
         return $user;
+    } else if ($chat->user2 == $user->id) {
+        return  $user;
+    } else {
+        return null;
     }
 });
+
+
+Broadcast::channel('available', function ($user) {
+     return $user;
+});
+
+
 Broadcast::channel('chat', function ($user, $chatId) {
     $chat = ChatMessage::where('id', $chatId)->first();
     if ($chat->user1 == $user->id) {

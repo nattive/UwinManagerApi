@@ -31,6 +31,6 @@ class GroupChat
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('groups.' . $this->chatMessage->group->id);
+        return new PresenceChannel('groups.' . $this->chatMessage->group->id);
     }
 }

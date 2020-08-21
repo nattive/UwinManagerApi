@@ -2,11 +2,10 @@
 
 namespace App;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
 use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
@@ -19,7 +18,6 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'isHOM',
         'isActive',
         'email',
         'head_of_manager_id',
@@ -29,8 +27,9 @@ class User extends Authenticatable
         'guarantorAddress',
         'thumbnail_url',
         'url',
+        'isOnline',
         'email_verified_at',
-        'password'
+        'password',
     ];
 
     /**
@@ -66,14 +65,18 @@ class User extends Authenticatable
     public function FuelConsumptionReports()
     {
         return $this->hasMany('App\FuelConsumptionReport');
-    } 
-      public function AccountReports()
+    }
+    public function AccountReports()
     {
         return $this->hasMany('App\AccountReport');
-    } 
-    
+    }
+
     public function chats()
     {
         return $this->belongsToMany('App\Chat');
+    }
+    public function groups()
+    {
+        return $this->belongsToMany('App\Group');
     }
 }

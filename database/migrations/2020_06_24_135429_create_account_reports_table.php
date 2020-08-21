@@ -30,11 +30,12 @@ class CreateAccountReportsTable extends Migration
             $table->integer('sub_total2')->default(0);
             $table->integer('fuel')->default(0);
             $table->integer('misc')->default(0);
+            $table->integer('pos')->default(0);
+            $table->integer('balance')->default(0);
             $table->string('isApprovedBy')->nullable();
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      *

@@ -38,7 +38,7 @@ class ChatMessageCreated implements ShouldBroadcastNow
 
     public function broadcastOn()
     {
-        return new PresenceChannel("private-chat-" . $this->message->receiver_id);
+        return new PresenceChannel("private-chat-" . $this->message->chat->id);
     }
 
     public function broadcastAs()
