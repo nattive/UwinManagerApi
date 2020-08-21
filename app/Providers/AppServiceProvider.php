@@ -2,8 +2,7 @@
 
 namespace App\Providers;
 
-use App\ChatMessage;
-use App\Observers\ChatMessageObserver;
+use Illuminate\Database\Schema\Builder;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Builder::defaultStringLength(191);
         // ChatMessage::observe(ChatMessageObserver::class);
 
     }
