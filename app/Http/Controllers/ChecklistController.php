@@ -181,43 +181,45 @@ class ChecklistController extends Controller
      */
     public function nextChecklistTime()
     {
-        $LastChecklist = Checklist::where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')->first();
-        $morningStart = '00:00:00';
-        $morningEnd = '08:30:00';
-        $AfternoonStart = '08:31:00';
-        $AfternoonEnd = '14:30:00';
-        $EveningStart = '14:30:00';
-        $EveningEnd = '20:30:00';
-        $midnight = Carbon::create('00:00:00')->format('Y-m-d H:i:s.u');
-        $time = Carbon::now('WAT');
+        // $LastChecklist = Checklist::where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')->first();
+        // $morningStart = '00:00:00';
+        // $morningEnd = '08:30:00';
+        // $AfternoonStart = '08:31:00';
+        // $AfternoonEnd = '14:30:00';
+        // $EveningStart = '14:31:00';
+        // $EveningEnd = '20:31:00';
+        // $midnight = Carbon::create('00:00:00')->format('Y-m-d H:i:s.u');
+        // $time = Carbon::now('WAT');
 
-        if ($time >= $EveningStart && $time < $EveningEnd) {
-            return Carbon::create($midnight)->addMinutes(510)->format('Y-m-d H:i:s.u');
-        } elseif ($time >= $AfternoonStart && $time <= $AfternoonEnd) {
-            return Carbon::create($midnight)->addMinutes(870)->format('Y-m-d H:i:s.u');
-        } elseif ($time >= $morningStart && $time <= $morningEnd) {
-            return Carbon::create($midnight)->addMinutes(1230)->format('Y-m-d H:i:s.u');            
-        }else{
-            Carbon::tomorrow('WAT')->addHours(2)->addMinutes(30)->format('Y-m-d H:i:s.u'); 
-        }
-
-        // switch ($this->getTimeOfTheDay()) {
-        //     case 'morning':
-        //         return Carbon::create($midnight)->addMinutes(510)->format('Y-m-d H:i:s.u');
-        //         break;
-        //     case 'afternoon':
-        //         return Carbon::create($midnight)->addMinutes(870)->format('Y-m-d H:i:s.u');
-        //         break;
-        //     case 'night':
-        //         # code...->addDay()
-        //         // $dt1 =   $midnight->addDay();
-        //         return Carbon::tomorrow('WAT')->addHours(8)->addMinutes(30)->format('Y-m-d H:i:s.u');
-
-        //         break;
-
-        //     default:
-        //         # code...
-        //         break;
+        // if ($time >= $EveningStart && $time < $EveningEnd) {
+        //     return Carbon::create($midnight)->addMinutes(510)->format('H:i:s.u');
+        // } elseif ($time >= $AfternoonStart && $time <= $AfternoonEnd) {
+        //     return Carbon::create($midnight)->addMinutes(870)->format('H:i:s.u');
+        // } elseif ($time >= $morningStart && $time <= $morningEnd) {
+        //     return Carbon::create($midnight)->addMinutes(1230)->format('H:i:s.u');
+        // }else{
+        //     Carbon::tomorrow('WAT')->addHours(2)->addMinutes(30)->format('H:i:s.u');
         // }
+        $midnight = Carbon::create('00:00:00')->format('Y-m-d H:i:s.u');
+        switch ($this->getTimeOfTheDay()) {
+            case 'morning':
+                return Carbon::create($midnight)->addMinutes(510)->toDateTimeLocalString();
+                break;
+            case 'afternoon':
+                return Carbon::create($midnight)->addMinutes(870)->toDateTimeLocalString();
+                break;
+            case 'night':
+                # code...->addDay()
+                // $LastChecklist = Checklist::where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')->first();
+
+                // if(Carbon::createFromTimeString($LastChecklist->nextChecklist)->isT)
+                return Carbon::tomorrow('WAT')->addHours(8)->addMinutes(30)->toDateTimeLocalString();
+
+                break;
+
+            default:
+                # code...
+                break;
+        }
     }
 }

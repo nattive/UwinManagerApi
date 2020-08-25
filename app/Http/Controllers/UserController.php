@@ -26,7 +26,7 @@ class UserController extends Controller
     {
         $users = User::where([
             ['isActive', '=', true],
-            ['id', '!=',  auth()->user()->id],
+            ['id', '!=', auth()->user()->id],
         ])->get();
         return response()->json($users, 200);
     }
@@ -78,7 +78,30 @@ class UserController extends Controller
         // return $request -> all();
         $user = User::where('id', $id)->first();
         $user->name = $request->name ?? $user->name;
-        $user->isActive = $request->isActive ?? $user->isActive;
+        switch ($request->isActive) {
+            case 'true':
+                $user->isActive = true;
+                break;
+            case true:
+                $user->isActive = true;
+                break;
+            case 1:
+                $user->isActive = true;
+                break;
+            case 'false':
+                $user->isActive = false;
+                break;
+            case false:
+                $user->isActive = false;
+                break;
+            case 0:
+                $user->isActive = false;
+                break;
+
+            default:
+                $user->isActive;
+                break;
+        }
         $user->email = $request->email ?? $user->email;
         $user->head_of_manager_id = $request->head_of_manager_id ?? $user->head_of_manager_id;
         $user->location = $request->location ?? $user->location;
@@ -101,8 +124,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+     public function destroy($id)
     {
-        //
+       $user = User::where('id', $id)->first();
+       $user->delete();
+       return  response('user has been deleted', 200);
     }
 }

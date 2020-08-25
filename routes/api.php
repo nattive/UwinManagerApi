@@ -63,7 +63,7 @@ Route::group(['prefix' => 'chat', 'middleware' => ['auth:api']], function () {
 
 Route::group(['prefix' => 'supervisor'], function () {
 
-    Route::group(['prefix' => 'user', 'middleware' => ['can:Edit All Users']], function () {
+    Route::group(['prefix' => 'user', 'middleware' => ['role:Director']], function () {
         Route::get('all', 'UserController@all');
     });
     Route::group(['prefix' => 'roles', 'middleware' => ['auth:api', 'role:Director']], function () {

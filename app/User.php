@@ -79,4 +79,39 @@ class User extends Authenticatable
     {
         return $this->belongsToMany('App\Group');
     }
+    public function getIsActiveAttribute($type)
+    {
+        switch ($type) {
+            case 'true':
+                return 'true';
+                break;
+            case true:
+                return 'true';
+                break;
+            case 1:
+                return true;
+                break;
+            case '1':
+                return 'true';
+                break;
+            case 'false':
+                return 'false';
+                break;
+            case false:
+                return false;
+                break;
+            case 0:
+                return 'false';
+                break;
+ case '0':
+                return 'false';
+                break;
+
+            default:
+              return 'false';
+;
+                break;
+        }
+
+    }
 }
