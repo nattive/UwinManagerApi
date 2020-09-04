@@ -18,11 +18,11 @@ class ReportController extends Controller
     public function index()
     {
      $user = auth()->user();
-        $account = AccountReport::where('user_id', $user -> id)->latest()->first();
-        $fuel = FuelConsumptionReport::where('user_id', $user -> id)->latest()->first();
-        $wskpa = WSKPA::where('user_id', $user -> id)->latest()->first();
-
-        return response()->json(compact('account','fuel', 'wskpa'), 200);
+        $Checklists = $user -> Checklists;
+        $WSKPAs = $user -> WSKPAs;
+        $FuelConsumptionReports = $user -> FuelConsumptionReports;
+        $AccountReports = $user -> AccountReports;
+        return response()->json(compact('Checklists','WSKPAs','FuelConsumptionReports', 'AccountReports'), 200);
     }
 
     /**

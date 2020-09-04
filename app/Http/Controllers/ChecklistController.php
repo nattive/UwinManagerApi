@@ -47,9 +47,7 @@ class ChecklistController extends Controller
             'lastChecked' => Carbon::now('WAT'), // Added 5:30mins
             'timeOfTheDay' => $this->getTimeOfTheDay(Carbon::now('WAT')),
         ]);
-        return response()->json([
-            'checklist' => $checklist,
-        ]);
+        return $this->shouldOpenDialog();
     }
 
     // public function store(Request $request)
@@ -161,16 +159,17 @@ class ChecklistController extends Controller
         $id = auth()->user()->id;
         $LastChecklist = Checklist::where('user_id', $id)->orderBy('created_at', 'desc')->first();
         if ($LastChecklist) {
+            // $diff = thi;
             $diff = Carbon::createFromTimeString($LastChecklist->nextChecklist)->subMinutes(60)->isPast();
-            // return   $diff;
+            // return   $LastChecklist->nextChecklist;
             return [
-                'open' => $diff,
+                'open' =>  false,
                 'type' => $this->getTimeOfTheDay(),
                 'next' => $this->nextChecklistTime(),
             ];
         }
         return [
-            'open' => true,
+            'open' => false,
             'type' => $this->getTimeOfTheDay(),
             'next' => $this->nextChecklistTime(),
         ];
@@ -213,7 +212,8 @@ class ChecklistController extends Controller
                 // $LastChecklist = Checklist::where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')->first();
 
                 // if(Carbon::createFromTimeString($LastChecklist->nextChecklist)->isT)
-                return Carbon::tomorrow('WAT')->addHours(8)->addMinutes(30)->toDateTimeLocalString();
+                return Carbon::create($midnight)->addHours(20)->addMinutes(30)->toDateTimeLocalString();
+                // return Carbon::now('WAT')->addSeconds(10)->toDateTimeLocalString();
 
                 break;
 

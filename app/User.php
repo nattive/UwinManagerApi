@@ -79,6 +79,11 @@ class User extends Authenticatable
     {
         return $this->belongsToMany('App\Group');
     }
+     public function NotifyUser()
+    {
+        return $this->belongsToMany('App\NotifyUser');
+    }
+
     public function getIsActiveAttribute($type)
     {
         switch ($type) {

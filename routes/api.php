@@ -34,9 +34,15 @@ Route::group(['prefix' => 'checklist', 'middleware' => ['auth:api']], function (
     Route::get('latest', 'ChecklistController@latest');
 });
 
+Route::group(['prefix' => 'notification', 'middleware' => ['auth:api']], function () {
+    Route::post('/', 'NotifyUserController@store');
+    Route::delete('/', 'NotifyUserController@destroy');
+    Route::put('/read/{id}', 'NotifyUserController@read');
+});
 Route::group(['prefix' => 'users', 'middleware' => ['auth:api']], function () {
     Route::get('active/all', 'UserController@active');
     Route::get('get/{id}', 'UserController@show');
+    Route::post('update/{id}', 'UserController@update');
     Route::post('update/{id}', 'UserController@update');
 });
 
@@ -84,6 +90,7 @@ Route::group(['prefix' => 'supervisor'], function () {
 
     Route::group(['prefix' => 'permission', 'middleware' => ['auth:api', 'role:Director']], function () {
         Route::post('/list', 'PermissionController@permission_list');
+        Route::delete('/user/delete/{id}', 'UserController@destroy');
         Route::post('/store', 'PermissionController@permission_store');
         Route::post('/permit_role/{role}', 'PermissionController@givePermissionToRole');
 

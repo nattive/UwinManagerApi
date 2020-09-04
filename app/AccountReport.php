@@ -8,22 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class AccountReport extends Model
 {
     protected $fillable = [
-        'unsettledWinnings',
-        'totalPayout',
-        'expenseTotal',
-        'totalPayout',
-        'actualCashAtHand',
-        'sub_total1',
-        'totalRunCred',
-        'eCreditFunded',
         'cashFunded',
-        'creditUnpaidTotal',
-        'expenseTotal',
-        'onlineBalance',
-        'expectedCashAtHand',
-        'sub_total2',
-        'fuel',
-        'misc',
+            'eCreditFunded',
+            'expectedCashAtHand',
+            'expenseTotal',
+            'fuel',
+            'misc',
+            'onlineBalance',
+            'pos',
+            'totalPayout',
+            'totalRunCred',
+            'unsettledWinnings',
     ];
 
     public function getCreatedAtAttribute($item)

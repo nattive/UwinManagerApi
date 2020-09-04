@@ -14,7 +14,8 @@ class WSKPAController extends Controller
      */
     public function index()
     {
-        $data = WSKPA::orderBy('created_at', 'desc')->get();
+        $user = auth()-> user();
+        $data =  $user -> WSKPAs;
         return response($data);
     }
 
@@ -109,7 +110,9 @@ class WSKPAController extends Controller
      */
     public function Latest()
     {
-        $report = WSKPA::orderBy('created_at', 'desc')->first();
+        $user =auth()->user();
+        $report =$user -> WSKPAs->first();
+        // $report = WSKPA::orderBy('created_at', 'desc')->first();
         return response($report);
     }
 }

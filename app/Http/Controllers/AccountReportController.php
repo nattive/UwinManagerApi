@@ -7,7 +7,18 @@ use Illuminate\Http\Request;
 
 class AccountReportController extends Controller
 {
-    /**
+    /**: 0
+    cashFunded: "200"
+    eCreditFunded: "250"
+    expectedCashAtHand: -1106
+    expenseTotal: 312553
+    fuel: "333"
+    misc: "310000"
+    onlineBalance: 0
+    pos: 0
+    totalPayout: "2220"
+    totalRunCred: 1450
+    unsettledWinnings: "1000"
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -15,6 +26,7 @@ class AccountReportController extends Controller
     public function index()
     {
         $user = auth()->user();
+        // return $user;
         if ($user) {
             return response()->json($user->AccountReports, 200);
         }
@@ -28,22 +40,21 @@ class AccountReportController extends Controller
      */
     public function store(Request $request)
     {
+
         $validate = $request->validate([
-            'unsettledWinnings' => 'required|int',
-            'totalPayout' => 'required|int',
-            'actualCashAtHand' => 'required|int',
-            'sub_total1' => 'required|int',
-            'totalRunCred' => 'required|int',
-            'eCreditFunded' => 'required|int',
-            'cashFunded' => 'required|int',
-            'creditUnpaidTotal' => 'required|int',
-            'expenseTotal' => 'required|int',
-            'onlineBalance' => 'required|int',
-            'expectedCashAtHand' => 'required|int',
-            'sub_total2' => 'required|int',
-            'fuel' => 'required|int',
-            'misc' => 'required|int',
+            'cashFunded' => 'required|integer',
+            'eCreditFunded' => 'required|integer',
+            'expectedCashAtHand' => 'required|integer',
+            'expenseTotal' => 'required|integer',
+            'fuel' => 'required|integer',
+            'misc' => 'required|integer',
+            'onlineBalance' => 'required|integer',
+            'pos' => 'required|integer',
+            'totalPayout' => 'required|integer',
+            'totalRunCred' => 'required|integer',
+            'unsettledWinnings' => 'required|integer',
         ]);
+        // return $validate;
         auth()->user()->accountReports()->create($validate);
         return response()->json('Account Created', 200);
     }
@@ -58,6 +69,14 @@ class AccountReportController extends Controller
     {
         $accountReport = AccountReport::where('id', $accountReport->id)->first();
         return response()->json($accountReport, 200);
+    }
+
+    public function Latest()
+    {
+        $user = auth()->user();
+        $report = $user->AccountReports->first();
+        // $report = WSKPA::orderBy('created_at', 'desc')->first();
+        return response($report);
     }
 
     /**
