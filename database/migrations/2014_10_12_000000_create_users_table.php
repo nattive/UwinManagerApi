@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             // $table->string('isHOM')->default(0);
             $table->string('isActive')->default(1);
             $table->string('email')->unique();
-            $table->string('head_of_manager_id')->nullable();
+            $table->string('role')->nullable();
             $table->string('location')->nullable();
             $table->string('phoneNumber')->nullable();
             $table->string('guarantorPhone')->nullable();

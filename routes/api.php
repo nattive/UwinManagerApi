@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -78,7 +79,7 @@ Route::group(['prefix' => 'supervisor'], function () {
         Route::post('/assign/{role}', 'PermissionController@assignRoleToUser');
 
     });
-    Route::group(['prefix' => 'report', 'middleware' => ['auth:api', 'can:Review Report']], function () {
+    Route::group(['prefix' => 'report', 'middleware' => ['auth:api']], function () {
         Route::post('/approve', 'SupervisorController@approveReport');
         Route::get('/wskpa', 'SupervisorController@wskpa');
         Route::get('/sfcr', 'SupervisorController@sfcr');

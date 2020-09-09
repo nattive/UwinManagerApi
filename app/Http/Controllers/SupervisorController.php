@@ -26,7 +26,7 @@ class SupervisorController extends Controller
     }
 
     /**
-     * Get report by user 
+     * Get report by user
      */
 
     public function wskpaByUser($id)
