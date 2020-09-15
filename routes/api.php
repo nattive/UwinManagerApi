@@ -18,7 +18,6 @@ Route::group([
     'prefix' => 'auth',
 ], function () {
     Route::post('login', 'AuthController@login')->name('login');
-    Route::post('signup', 'AuthController@signup');
 
     Route::group([
         'middleware' => ['auth:api'],
@@ -49,6 +48,7 @@ Route::group(['prefix' => 'users', 'middleware' => ['auth:api']], function () {
 
 Route::group(['prefix' => 'chat', 'middleware' => ['auth:api']], function () {
     Route::get('messages', 'ChatController@fetchMessages');
+    Route::get('read/{id}', 'ChatController@readMessage');
     Route::get('online/all', 'ChatController@getOnlineManagers');
     Route::get('messages/chat-id/{id}', 'ChatController@getMessagesByChat');
     Route::post('messages', 'ChatController@sendMessage');
@@ -68,18 +68,20 @@ Route::group(['prefix' => 'chat', 'middleware' => ['auth:api']], function () {
     });
 });
 
+
 Route::group(['prefix' => 'supervisor'], function () {
 
-    Route::group(['prefix' => 'user', 'middleware' => ['role:Director']], function () {
+    Route::group(['prefix' => 'user', 'middleware' => ['isDirector']], function () {
         Route::get('all', 'UserController@all');
-    });
-    Route::group(['prefix' => 'roles', 'middleware' => ['auth:api', 'role:Director']], function () {
-        Route::get('/list', 'PermissionController@role_list');
-        Route::post('/store', 'PermissionController@role_store');
-        Route::post('/assign/{role}', 'PermissionController@assignRoleToUser');
+    Route::post('signup', 'AuthController@signup');
 
     });
-    Route::group(['prefix' => 'report', 'middleware' => ['auth:api']], function () {
+    Route::group(['prefix' => 'roles', 'middleware' => ['auth:api', 'isDirector' ]], function () {
+        Route::post('/assign', 'PositionController@assign');
+        Route::post('/default', 'PositionController@toDefault');
+
+    });
+    Route::group(['prefix' => 'report', 'middleware' => ['auth:api',  'isSupervisor']], function () {
         Route::post('/approve', 'SupervisorController@approveReport');
         Route::get('/wskpa', 'SupervisorController@wskpa');
         Route::get('/sfcr', 'SupervisorController@sfcr');
@@ -89,7 +91,7 @@ Route::group(['prefix' => 'supervisor'], function () {
         Route::get('/sales/{id}', 'SupervisorController@salesByUser');
     });
 
-    Route::group(['prefix' => 'permission', 'middleware' => ['auth:api', 'role:Director']], function () {
+    Route::group(['prefix' => 'permission', 'middleware' => ['auth:api',  'isSupervisor', 'isDirector']], function () {
         Route::post('/list', 'PermissionController@permission_list');
         Route::delete('/user/delete/{id}', 'UserController@destroy');
         Route::post('/store', 'PermissionController@permission_store');

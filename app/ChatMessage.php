@@ -13,6 +13,7 @@ class ChatMessage extends Model
         'user_id',
         'receiver_id',
         'text',
+        'isRead',
         'group_id',
     ];
     public function chat()
@@ -23,7 +24,7 @@ class ChatMessage extends Model
     {
         return $this->belongsTo(Group::class);
     }
-    
+
     public function user()
     {
         return $this->belongsTo('App\User');

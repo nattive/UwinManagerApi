@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'head_of_manager_id',
         'location',
+        'position',
         'phoneNumber',
         'guarantorPhone',
         'guarantorAddress',

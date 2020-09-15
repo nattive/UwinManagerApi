@@ -98,7 +98,19 @@ class ChatController extends Controller
 
         return response()->json($managers, 200);
     }
-   
+
+    public function readMessage($id)
+    {
+        $ChatMessage = ChatMessage::findOrFail($id);
+        if(auth()->user()->id == $ChatMessage -> user_id){
+            $ChatMessage -> update([
+                'isRead' => true
+            ]);
+        }
+        return $ChatMessage;
+
+    }
+
     public function getChat($id)
     {
         $user = auth()->user();
