@@ -91,7 +91,7 @@ Route::group(['prefix' => 'supervisor'], function () {
         Route::get('/sales/{id}', 'SupervisorController@salesByUser');
     });
 
-    Route::group(['prefix' => 'permission', 'middleware' => ['auth:api',  'isSupervisor', 'isDirector']], function () {
+    Route::group(['prefix' => 'permission', 'middleware' => ['auth:api',  'isSupervisor']], function () {
         Route::post('/list', 'PermissionController@permission_list');
         Route::delete('/user/delete/{id}', 'UserController@destroy');
         Route::post('/store', 'PermissionController@permission_store');
