@@ -39,10 +39,16 @@ class ChecklistController extends Controller
     public function store(Request $request)
     {
         $user = auth()->user();
+        $last = Checklist::where('user_id',  $user -> id)->orderBy('created_at', 'desc')->first();
+
+        if ($last) {
+            $isOkay = $this->checkIfOkay($this->getTimeOfTheDay(Carbon::now('WAT')), $last->timeOfTheDay);
+        } else {
+            $isOkay = true;
+        }
         $checklist = $user->Checklists()->create([
-            'user_id' => $user->id,
             'isLate' => false,
-            'isOkay' => 'true',
+            'isOkay' => $isOkay,
             'nextChecklist' => $this->nextChecklistTime(),
             'lastChecked' => Carbon::now('WAT'), // Added 5:30mins
             'timeOfTheDay' => $this->getTimeOfTheDay(Carbon::now('WAT')),
@@ -50,6 +56,26 @@ class ChecklistController extends Controller
         return $this->shouldOpenDialog();
     }
 
+    public function checkIfOkay($now, $previous = null)
+    {
+        if ($previous == null) {
+            return true;
+        }
+        switch ($now) {
+            case 'morning':
+                return $previous == 'night' ? true : false;
+                break;
+            case 'afternoon':
+                return $previous == 'morning' ? true : false;
+                break;
+            case 'night':
+                return $previous == 'afternoon' ? true : false;
+                break;
+            default:
+                return false;
+                break;
+        }
+    }
     public function getTimeOfTheDay()
     {
 

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\AccountReport;
+use App\Checklist;
 use App\FuelConsumptionReport;
+use App\Http\Resources\ChecklistResource;
+use App\User;
 use App\WSKPA;
 use Illuminate\Http\Request;
 
@@ -23,6 +26,15 @@ class SupervisorController extends Controller
     {
         $wskpa = AccountReport::with('user')->get();
         return response()->json($wskpa, 200);
+    }
+    public function checklist()
+    {
+        $checklist = Checklist::with('user')->get();
+        return ChecklistResource::collection($checklist);
+    }
+    public function UserChecklist(User $user)
+    {
+        return ChecklistResource::collection($user->Checklists);
     }
 
     /**
@@ -49,7 +61,7 @@ class SupervisorController extends Controller
     {
         $data = $request->validate([
             'report' => 'required|string',
-            'report_id' => 'required|int'
+            'report_id' => 'required|int',
         ]);
         switch ($request->report) {
             case 'wskpa':

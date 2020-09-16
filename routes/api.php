@@ -89,6 +89,8 @@ Route::group(['prefix' => 'supervisor'], function () {
         Route::get('/wskpa/{id}', 'SupervisorController@wskpaByUser');
         Route::get('/sfcr/{id}', 'SupervisorController@sfcrByUser');
         Route::get('/sales/{id}', 'SupervisorController@salesByUser');
+        Route::get('/checklist', 'SupervisorController@checklist');
+        Route::get('/checklist/{id}', 'SupervisorController@UserChecklist');
     });
 
     Route::group(['prefix' => 'permission', 'middleware' => ['auth:api',  'isSupervisor']], function () {
