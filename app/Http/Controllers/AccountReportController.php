@@ -7,18 +7,7 @@ use Illuminate\Http\Request;
 
 class AccountReportController extends Controller
 {
-    /**: 0
-    cashFunded: "200"
-    eCreditFunded: "250"
-    expectedCashAtHand: -1106
-    expenseTotal: 312553
-    fuel: "333"
-    misc: "310000"
-    onlineBalance: 0
-    pos: 0
-    totalPayout: "2220"
-    totalRunCred: 1450
-    unsettledWinnings: "1000"
+    /*
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -53,6 +42,7 @@ class AccountReportController extends Controller
             'totalPayout' => 'required|integer',
             'totalRunCred' => 'required|integer',
             'unsettledWinnings' => 'required|integer',
+            'report_date' => '',
         ]);
         // return $validate;
         auth()->user()->accountReports()->create($validate);
@@ -96,6 +86,7 @@ class AccountReportController extends Controller
             'totalPayout',
             'actualCashAtHand',
             'sub_total1',
+            'report_date',
             'totalRunCred',
             'eCreditFunded',
             'cashFunded',

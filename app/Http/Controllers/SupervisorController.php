@@ -14,26 +14,27 @@ class SupervisorController extends Controller
 {
     public function wskpa()
     {
-        $wskpa = WSKPA::with('user')->get();
+        $wskpa = WSKPA::with('user')->orderBy('created_at', 'desc')->get();
         return response()->json($wskpa, 200);
     }
     public function sfcr()
     {
-        $wskpa = FuelConsumptionReport::with('user')->get();
+        $wskpa = FuelConsumptionReport::with('user'->orderBy('created_at', 'desc'))->get();
         return response()->json($wskpa, 200);
     }
     public function sales()
     {
-        $wskpa = AccountReport::with('user')->get();
+        $wskpa = AccountReport::with('user')->orderBy('created_at', 'desc')->get();
         return response()->json($wskpa, 200);
     }
     public function checklist()
     {
-        $checklist = Checklist::with('user')->get();
+        $checklist = Checklist::with('user')->orderBy('created_at', 'desc')->get();
         return ChecklistResource::collection($checklist);
     }
-    public function UserChecklist(User $user)
+    public function UserChecklist($user_id)
     {
+        $user = User::where('id', $user_id)->first();
         return ChecklistResource::collection($user->Checklists);
     }
 

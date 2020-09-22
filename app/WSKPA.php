@@ -15,6 +15,7 @@ class WSKPA extends Model
         'workPercentage',
         'cr_rs',
         'revenue_per_day',
+        'report_date',
         'user_id',
         'appearance',
         'general_equipment_maintenance',

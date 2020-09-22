@@ -49,6 +49,7 @@ class FuelConsumptionReportController extends Controller
             'petrol_station' => '',
             'hasReceive' => '',
             'pricePerLitre' => '',
+            'report_date' => '',
         ]);
         $prevReport = FuelConsumptionReport::orderBy('created_at', 'desc')->first();
         if ($prevReport) {
@@ -62,6 +63,7 @@ class FuelConsumptionReportController extends Controller
                 'petrol_station' => $request->petrol_station,
                 'hasReceived' => $request->hasReceive,
                 'pricePerLitre' => $request->pricePerLitre,
+                'report_date' => $request->report_date,
                 'orderInterval' => $date->diffForHumans(),
                 'user_id' =>  auth()->user()->id,
             ]);
@@ -69,6 +71,7 @@ class FuelConsumptionReportController extends Controller
             FuelConsumptionReport::create([
                 'date_finished' => $request->date_finished,
                 'date_supplied' => $request->date_supplied,
+                'report_date' => $request->report_date,
                 'usage_duration' => $request->usage_duration,
                 'volume' => $request->volume,
                 'petrol_station' => $request->petrol_station,

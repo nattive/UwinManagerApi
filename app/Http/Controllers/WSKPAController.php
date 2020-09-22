@@ -31,6 +31,7 @@ class WSKPAController extends Controller
             'accountability' => 'required',
             'appearance' => 'required',
             'cr_rs' => 'required',
+            'report_date' => '',
             'full_name' => 'required',
             'punctuality' => 'required',
             'revenue_per_day' => 'required',
@@ -43,6 +44,7 @@ class WSKPAController extends Controller
             'user_id' => auth()->user()->id,
             'accountability' => $request->accountability,
             'appearance' => $request->appearance,
+            'report_date' => $request->report_date,
             'cr_rs' => $request->cr_rs,
             'full_name' => $request->full_name,
             'punctuality' => $request->punctuality,
@@ -83,6 +85,7 @@ class WSKPAController extends Controller
             'cr_rs' => $request->cr_rs ?? $report->cr_rs,
             'full_name' => $request->full_name ?? $report->full_name,
             'punctuality' => $request->punctuality ?? $report->punctuality,
+            'report_date' => $request->report_date ?? $report->report_date,
             'revenue_per_day' => $request->revenue_per_day ?? $report->revenue_per_day,
             'workPercentage' => $request->workPercentage ?? $report->workPercentage,
             'work_attendance' => $request->work_attendance ?? $report->work_attendance,
@@ -105,7 +108,7 @@ class WSKPAController extends Controller
     }
 
     /**
-     * Returns last entry 
+     * Returns last entry
      * @return Response
      */
     public function Latest()
