@@ -16,8 +16,8 @@ class FuelConsumptionReportController extends Controller
      */
     public function index()
     {
-        $id =  auth()->user()->id;
-        $reports = FuelConsumptionReport::where('id', $id)->orderBy('created_at', 'desc')->get();
+        // $id = auth()->user()->id;
+        $reports = \auth()->user()-> FuelConsumptionReports;
         return response($reports);
     }
 
@@ -40,47 +40,29 @@ class FuelConsumptionReportController extends Controller
      */
     public function store(Request $request)
     {
-        // return $request->all();
         $data = $request->validate([
             'date_finished' => '',
             'date_supplied' => '',
-            'usage_duration' => '',
-            'volume' => '',
+            'usage_duration' => 'required',
+            'volume' => 'required',
             'petrol_station' => '',
-            'hasReceive' => '',
+            // 'hasReceive' => '',
             'pricePerLitre' => '',
-            'report_date' => '',
+            'report_date' => 'required',
         ]);
+        // return $data;
         $prevReport = FuelConsumptionReport::orderBy('created_at', 'desc')->first();
         if ($prevReport) {
             $date = Carbon::parse($prevReport->created_at);
-            $orderInterval = $date->diffForHumans();
-            FuelConsumptionReport::create([
-                'date_finished' => $request->date_finished,
-                'date_supplied' => $request->date_supplied,
-                'usage_duration' => $request->usage_duration,
-                'volume' => $request->volume,
-                'petrol_station' => $request->petrol_station,
-                'hasReceived' => $request->hasReceive,
-                'pricePerLitre' => $request->pricePerLitre,
-                'report_date' => $request->report_date,
+            $ExtraData = [
                 'orderInterval' => $date->diffForHumans(),
-                'user_id' =>  auth()->user()->id,
-            ]);
+            ];
         } else {
-            FuelConsumptionReport::create([
-                'date_finished' => $request->date_finished,
-                'date_supplied' => $request->date_supplied,
-                'report_date' => $request->report_date,
-                'usage_duration' => $request->usage_duration,
-                'volume' => $request->volume,
-                'petrol_station' => $request->petrol_station,
-                'hasReceived' => $request->hasReceive,
-                'pricePerLitre' => $request->pricePerLitre,
+            $ExtraData = [
                 'orderInterval' => null,
-                'user_id' =>  auth()->user()->id,
-            ]);
+            ];
         }
+        \auth()->user()->FuelConsumptionReports()->create(array_merge($data, $ExtraData));
         return response('Fuel Report Updated successfully');
     }
 

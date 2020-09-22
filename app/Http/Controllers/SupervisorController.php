@@ -19,7 +19,7 @@ class SupervisorController extends Controller
     }
     public function sfcr()
     {
-        $wskpa = FuelConsumptionReport::with('user'->orderBy('created_at', 'desc'))->get();
+        $wskpa = FuelConsumptionReport::with('user')->orderBy('created_at', 'desc')->get();
         return response()->json($wskpa, 200);
     }
     public function sales()

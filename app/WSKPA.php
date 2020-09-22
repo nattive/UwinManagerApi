@@ -27,6 +27,13 @@ class WSKPA extends Model
             'parts' => 2,
         ]);
     }
+
+    public function getReportDateAttribute($item)
+    {
+       return Carbon::parse($item)->toFormattedDateString();
+
+    }
+
     public function getUpdatedAtAttribute($value)
     {
         $carbon = Carbon::parse($value);

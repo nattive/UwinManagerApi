@@ -17,6 +17,7 @@ class AccountReport extends Model
             'onlineBalance',
             'pos',
             'totalPayout',
+            'report_date',
             'totalRunCred',
             'unsettledWinnings',
     ];
@@ -38,5 +39,11 @@ class AccountReport extends Model
     public function user()
     {
         return $this->belongsTo('App\User');
+    }
+
+    public function getReportDateAttribute($item)
+    {
+       return Carbon::parse($item)->toFormattedDateString();
+
     }
 }

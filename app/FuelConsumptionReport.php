@@ -15,7 +15,10 @@ class FuelConsumptionReport extends Model
         'petrol_station',
         'hasReceive',
         'pricePerLitre',
-        'user_id', 'approvedBy'
+        'report_date',
+        'orderInterval',
+        'user_id',
+        'approvedBy'
     ];
 
     public function setDateFinishedAttribute($value)
@@ -46,6 +49,12 @@ class FuelConsumptionReport extends Model
         return $item->diffForHumans([
             'parts' => 2,
         ]);
+    }
+
+    public function getReportDateAttribute($item)
+    {
+       return Carbon::parse($item)->toFormattedDateString();
+
     }
     public function user()
     {
