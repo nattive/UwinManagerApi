@@ -39,7 +39,7 @@ class ChecklistController extends Controller
     public function store(Request $request)
     {
         $user = auth()->user();
-        $last = Checklist::where('user_id',  $user -> id)->orderBy('created_at', 'desc')->first();
+        $last = Checklist::where('user_id', $user->id)->orderBy('created_at', 'desc')->first();
 
         if ($last) {
             $isOkay = $this->checkIfOkay($this->getTimeOfTheDay(Carbon::now('WAT')), $last->timeOfTheDay);
@@ -125,12 +125,14 @@ class ChecklistController extends Controller
                 'open' => false,
                 'type' => $this->getTimeOfTheDay(),
                 'next' => $this->nextChecklistTime(),
+                'diffentInTime' => Carbon::now('WAT')->diffInMinutes($this->nextChecklistTime()),
             ];
         }
         return [
             'open' => false,
             'type' => $this->getTimeOfTheDay(),
             'next' => $this->nextChecklistTime(),
+            'diffentInTime' => Carbon::now('WAT')->diffInMinutes($this->nextChecklistTime()),
         ];
     }
     /**
@@ -142,10 +144,10 @@ class ChecklistController extends Controller
         $midnight = Carbon::create('00:00:00')->format('Y-m-d H:i:s.u');
         switch ($this->getTimeOfTheDay()) {
             case 'morning':
-                return Carbon::create($midnight)->addMinutes(510)->toDateTimeLocalString();
+                return Carbon::create($midnight)->addHours(14)->addMinutes(30)->toDateTimeLocalString();
                 break;
             case 'afternoon':
-                return Carbon::create($midnight)->addMinutes(870)->toDateTimeLocalString();
+                return Carbon::create($midnight)->addHours(8)->addMinutes(30)->toDateTimeLocalString();
                 break;
             case 'night':
                 return Carbon::create($midnight)->addHours(20)->addMinutes(30)->toDateTimeLocalString();
