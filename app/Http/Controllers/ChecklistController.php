@@ -20,6 +20,7 @@ class ChecklistController extends Controller
                     'open' => false,
                     'type' => $this->getTimeOfTheDay(),
                     'next' => $this->nextChecklistTime(),
+                    'lastChecklist' => $lastPostToday->timeOfTheDay,
                     'diffentInTime' => Carbon::now()->diffInMinutes($this->nextChecklistTime()),
                 ];
             } else {
@@ -174,7 +175,7 @@ class ChecklistController extends Controller
                             return Carbon::create($midnight)->addHours(20)->addMinutes(30)->toDateTimeLocalString();
                             break;
                         case 'night':
-                          return Carbon::now()->tomorrow()->addHours(8)->addMinutes(30)->toDateTimeLocalString();
+                            return Carbon::now()->tomorrow()->addHours(8)->addMinutes(30)->toDateTimeLocalString();
 
                             break;
                         case 'midnight':
@@ -246,23 +247,33 @@ class ChecklistController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store()
     {
-        $user = auth()->user();
-        $last = Checklist::where('user_id', $user->id)->orderBy('created_at', 'desc')->first();
-        if ($last) {
-            $isOkay = $this->checkIfOkay($this->getTimeOfTheDay(Carbon::now()), $last->timeOfTheDay);
-        } else {
-            $isOkay = true;
+        $now = Carbon::now()->setTimezone('Africa/Lagos');
+        $min_morning = Carbon::createFromTimeString('08:00:00');
+        $max_morning = Carbon::createFromTimeString('08:30:00');
+        $min_afternoon = Carbon::createFromTimeString('14:00:00');
+        $max_afternoon = Carbon::createFromTimeString('14:30:00');
+        $min_night = Carbon::createFromTimeString('08:00:00');
+        $max_night = Carbon::createFromTimeString('08:30:00');
+        if ($now->isBetween($min_morning, $max_morning) || $now->isBetween($min_afternoon, $max_afternoon) || $now->isBetween($min_night, $max_night)) {
+            $user = auth()->user();
+            $last = Checklist::where('user_id', $user->id)->orderBy('created_at', 'desc')->first();
+            if ($last) {
+                $isOkay = $this->checkIfOkay($this->getTimeOfTheDay(Carbon::now()), $last->timeOfTheDay);
+            } else {
+                $isOkay = true;
+            }
+            $user->Checklists()->create([
+                'isLate' => false,
+                'isOkay' => $isOkay,
+                'nextChecklist' => $this->nextChecklistTime(),
+                'lastChecked' => Carbon::now(), // Added 5:30mins
+                'timeOfTheDay' => $this->getTimeOfTheDay(),
+            ]);
+            return $this->shouldOpenDialog();
         }
-        $user->Checklists()->create([
-            'isLate' => false,
-            'isOkay' => $isOkay,
-            'nextChecklist' => $this->nextChecklistTime(),
-            'lastChecked' => Carbon::now(), // Added 5:30mins
-            'timeOfTheDay' => $this->getTimeOfTheDay(),
-        ]);
-        return $this->shouldOpenDialog();
+        return response()->json('This checklist is checked prematurely', 401);
     }
 }
 
