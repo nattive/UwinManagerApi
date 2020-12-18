@@ -250,12 +250,13 @@ class ChecklistController extends Controller
     public function store()
     {
         $now = Carbon::now()->setTimezone('Africa/Lagos');
-        $min_morning = Carbon::createFromTimeString('08:00:00');
-        $max_morning = Carbon::createFromTimeString('08:30:00');
-        $min_afternoon = Carbon::createFromTimeString('14:00:00');
-        $max_afternoon = Carbon::createFromTimeString('14:30:00');
-        $min_night = Carbon::createFromTimeString('08:00:00');
-        $max_night = Carbon::createFromTimeString('08:30:00');
+        // return $now;
+        $min_morning =  Carbon::create('08:00:00')->format('Y-m-d H:i:s.u');
+        $max_morning = Carbon::create('08:30:00')->format('Y-m-d H:i:s.u');
+        $min_afternoon = Carbon::create('14:00:00')->format('Y-m-d H:i:s.u');
+        $max_afternoon = Carbon::create('14:30:00')->format('Y-m-d H:i:s.u');
+        $min_night = Carbon::create('08:00:00')->format('Y-m-d H:i:s.u');
+        $max_night = Carbon::create('08:30:00')->format('Y-m-d H:i:s.u');
         if ($now->isBetween($min_morning, $max_morning) || $now->isBetween($min_afternoon, $max_afternoon) || $now->isBetween($min_night, $max_night)) {
             $user = auth()->user();
             $last = Checklist::where('user_id', $user->id)->orderBy('created_at', 'desc')->first();
