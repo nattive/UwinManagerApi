@@ -26,18 +26,18 @@ class ChecklistController extends Controller
             } else {
                 switch ($this->getTimeOfTheDay()) {
                     case 'morning':
-                        $min = Carbon::createFromTimeString('08:00:00');
-                        $max = Carbon::createFromTimeString('08:30:00');
+                       $min = Carbon::create('08:00:00')->format('Y-m-d H:i:s.u');
+                        $max = Carbon::create('08:30:00')->format('Y-m-d H:i:s.u');
                         return [
                             'open' => $now->isBetween($min, $max),
-                            'type' => 'morning',
+                            'type' => $max ->isPast() ? 'afternoon' : 'morning',
                             'next' => $this->nextChecklistTime(),
                             'diffentInTime' => Carbon::now()->diffInMinutes($this->nextChecklistTime()),
                         ];
                         break;
                     case 'afternoon':
-                        $min = Carbon::createFromTimeString('14:00:00');
-                        $max = Carbon::createFromTimeString('14:30:00');
+                        $min = Carbon::create('14:00:00')->format('Y-m-d H:i:s.u');
+                        $max = Carbon::create('14:30:00')->format('Y-m-d H:i:s.u');
                         return [
                             'open' => $now->isBetween($min, $max),
                             'type' => 'afternoon',
@@ -46,11 +46,11 @@ class ChecklistController extends Controller
                         ];
                         break;
                     case 'night':
-                        $min = Carbon::createFromTimeString('08:00:00');
-                        $max = Carbon::createFromTimeString('08:30:00');
+                         $min = Carbon::create('08:00:00')->format('Y-m-d H:i:s.u');
+                        $max = Carbon::create('08:30:00')->format('Y-m-d H:i:s.u');
                         return [
-                            'open' => true,
-                            'type' => 'night',
+                            'open' => $now->isBetween($min, $max),
+                            'type' =>'night',
                             'next' => $this->nextChecklistTime(),
                             'diffentInTime' => Carbon::now()->diffInMinutes($this->nextChecklistTime()),
                         ];
