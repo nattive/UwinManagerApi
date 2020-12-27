@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Checklist;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ChecklistController extends Controller
@@ -26,11 +25,11 @@ class ChecklistController extends Controller
             } else {
                 switch ($this->getTimeOfTheDay()) {
                     case 'morning':
-                       $min = Carbon::create('08:00:00')->format('Y-m-d H:i:s.u');
+                        $min = Carbon::create('08:00:00')->format('Y-m-d H:i:s.u');
                         $max = Carbon::create('08:30:00')->format('Y-m-d H:i:s.u');
                         return [
                             'open' => $now->isBetween($min, $max),
-                            'type' => $max ->isPast() ? 'afternoon' : 'morning',
+                            'type' => $max->isPast() ? 'afternoon' : 'morning',
                             'next' => $this->nextChecklistTime(),
                             'diffentInTime' => Carbon::now()->diffInMinutes($this->nextChecklistTime()),
                         ];
@@ -46,11 +45,11 @@ class ChecklistController extends Controller
                         ];
                         break;
                     case 'night':
-                         $min = Carbon::create('08:00:00')->format('Y-m-d H:i:s.u');
+                        $min = Carbon::create('08:00:00')->format('Y-m-d H:i:s.u');
                         $max = Carbon::create('08:30:00')->format('Y-m-d H:i:s.u');
                         return [
                             'open' => $now->isBetween($min, $max),
-                            'type' =>'night',
+                            'type' => 'night',
                             'next' => $this->nextChecklistTime(),
                             'diffentInTime' => Carbon::now()->diffInMinutes($this->nextChecklistTime()),
                         ];
@@ -251,30 +250,23 @@ class ChecklistController extends Controller
     {
         $now = Carbon::now()->setTimezone('Africa/Lagos');
         // return $now;
-        $min_morning =  Carbon::create('08:00:00')->format('Y-m-d H:i:s.u');
-        $max_morning = Carbon::create('08:30:00')->format('Y-m-d H:i:s.u');
-        $min_afternoon = Carbon::create('14:00:00')->format('Y-m-d H:i:s.u');
-        $max_afternoon = Carbon::create('14:30:00')->format('Y-m-d H:i:s.u');
-        $min_night = Carbon::create('08:00:00')->format('Y-m-d H:i:s.u');
-        $max_night = Carbon::create('08:30:00')->format('Y-m-d H:i:s.u');
-        if ($now->isBetween($min_morning, $max_morning) || $now->isBetween($min_afternoon, $max_afternoon) || $now->isBetween($min_night, $max_night)) {
-            $user = auth()->user();
-            $last = Checklist::where('user_id', $user->id)->orderBy('created_at', 'desc')->first();
-            if ($last) {
-                $isOkay = $this->checkIfOkay($this->getTimeOfTheDay(Carbon::now()), $last->timeOfTheDay);
-            } else {
-                $isOkay = true;
-            }
-            $user->Checklists()->create([
-                'isLate' => false,
-                'isOkay' => $isOkay,
-                'nextChecklist' => $this->nextChecklistTime(),
-                'lastChecked' => Carbon::now(), // Added 5:30mins
-                'timeOfTheDay' => $this->getTimeOfTheDay(),
-            ]);
-            return $this->shouldOpenDialog();
+
+        $user = auth()->user();
+        $last = Checklist::where('user_id', $user->id)->orderBy('created_at', 'desc')->first();
+        if ($last) {
+            $isOkay = $this->checkIfOkay($this->getTimeOfTheDay(Carbon::now()), $last->timeOfTheDay);
+        } else {
+            $isOkay = true;
         }
-        return response()->json('This checklist is checked prematurely', 401);
+        $user->Checklists()->create([
+            'isLate' => false,
+            'isOkay' => $isOkay,
+            'nextChecklist' => $this->nextChecklistTime(),
+            'lastChecked' => Carbon::now(), // Added 5:30mins
+            'timeOfTheDay' => $this->getTimeOfTheDay(),
+        ]);
+        return $this->shouldOpenDialog();
+
     }
 }
 
